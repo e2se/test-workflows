@@ -46,7 +46,7 @@ jobs:
     #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
 
     - name: Deploy
-      working-directory: ${{github.workspace}}/e2-sat-editor/src/build
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
       # continue-on-error: true
       run: |
         DESTDIR=../AppDir ninja -C build install
