@@ -1,0 +1,62 @@
+name: build-macos-intel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: macos-12
+
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+      BUILD_TYPE: Release
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: ctlcltd/e2-sat-editor
+        tag: v1.1.1
+        path: e2-sat-editor
+
+    - name: Setup Homebrew
+      run: brew install cmake ninja qt6 curl
+
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      run: |
+        cmake \
+        -G Ninja \
+        -B build \
+        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+        -DCURL_INCLUDE_DIR=/usr/local/opt/curl/include \
+        -DCURL_NO_CURL_CMAKE=ON
+
+    - name: Build
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      run: cmake --build build --config ${{env.BUILD_TYPE}}
+
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src/build
+    #   continue-on-error: true
+    #   timeout-minutes: 1
+    #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
+
+    - name: Deploy
+      working-directory: ${{github.workspace}}/e2-sat-editor/src/build
+      # continue-on-error: true
+      run: |
+        DESTDIR=../AppDir ninja -C build install
+        cd AppDir/usr/local
+        macdeployqt e2\ SAT\ Editor.app
+
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src/AppDir
+    #   continue-on-error: true
+    #   timeout-minutes: 1
+    #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./usr/local/e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4.2.0
+      with:
+        path: ${{github.workspace}}/e2-sat-editor/src/AppDir

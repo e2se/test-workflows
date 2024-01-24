@@ -1,0 +1,69 @@
+name: build-win32
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: windows-2022
+
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+      BUILD_TYPE: RelWithDebInfo
+
+    steps:
+    - run: git config --global core.autocrlf input
+    - uses: actions/checkout@v3
+      with:
+        repository: ctlcltd/e2-sat-editor
+        tag: v1.1.1
+        path: e2-sat-editor
+
+    - name: Setup MSYS2
+      uses: msys2/setup-msys2@v2
+      with:
+        pacboy: >-
+          cc:i cmake:i ninja:i qt5-base:i qt5-translations:i curl:i
+
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      shell: msys2 {0}
+      run: |
+        cmake \
+        -G Ninja \
+        -B build \
+        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+        -DWITH_QT5=ON
+
+    - name: Build
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      shell: msys2 {0}
+      run: cmake --build build --config ${{env.BUILD_TYPE}}
+
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src/build
+    #   continue-on-error: true
+    #   timeout-minutes: 1
+    #   shell: msys2 {0}
+    #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./e2-sat-editor.exe
+
+    - name: Deploy
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      # continue-on-error: true
+      shell: msys2 {0}
+      run: |
+        DESTDIR=../AppDir ninja -C build install
+        # cd AppDir/Program\ Files\ (x86)/e2-sat-editor
+        # windeployqt e2-sat-editor.exe
+
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src/AppDir
+    #   continue-on-error: true
+    #   timeout-minutes: 1
+    #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./Program\ Files\ (x86)/e2-sat-editor/e2-sat-editor.exe
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4.2.0
+      with:
+        path: ${{github.workspace}}/e2-sat-editor/src/AppDir

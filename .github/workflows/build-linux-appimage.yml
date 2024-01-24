@@ -1,0 +1,80 @@
+name: build-linux-appimage
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-22.04
+
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+      BUILD_TYPE: Release
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: ctlcltd/e2-sat-editor
+        tag: v1.1.1
+        path: e2-sat-editor
+
+    - name: Setup apt
+      run: |
+        apt install curl libcurl4-openssl-dev
+        apt install qt6-base-dev qt6-translations-l10n
+        apt install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
+        apt install cmake ninja-build
+
+    - name: Download utilities
+      run: |
+        apt install fuse
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
+        chmod +x appimagetool-x86_64.AppImage
+
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      run: |
+        cmake \
+        -G Ninja \
+        -B build \
+        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      run: cmake --build build --config ${{env.BUILD_TYPE}}
+
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src/build
+    #   continue-on-error: true
+    #   timeout-minutes: 1
+    #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./e2-sat-editor
+
+    - name: Deploy
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      # continue-on-error: true
+      run: |
+        DESTDIR=../AppDir ninja -C build install
+        # copy translations
+        mkdir -p AppDir/usr/share/qt/translations
+        cp /usr/share/qt/translations/qt_*.qm AppDir/usr/share/qt/translations
+        cp /usr/share/qt/translations/qtbase_*.qm AppDir/usr/share/qt/translations
+        rm -R AppDir/usr/share/qt/translations/qt_help_*.qm
+        # prepare e2se files
+        rm AppDir/usr/share/applications/e2se-cli.desktop
+        mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
+        mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
+        mkdir -p AppDir/usr/share/doc/e2-sat-editor
+        mv AppDir/usr/share/e2-sat-editor/COPYING AppDir/usr/share/doc/e2-sat-editor/copyright
+        # run linuxdeploy
+        ## export QMAKE=qmake
+        linuxdeploy --appdir AppDir --plugin qt --output appimage
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4.2.0
+      with:
+        path: ${{github.workspace}}/e2-sat-editor/src/AppDir
