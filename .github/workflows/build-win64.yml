@@ -68,7 +68,7 @@ jobs:
       run: |
         DESTDIR=../AppDir ninja -C build install
         # cd AppDir/Program\ Files\ (x86)/e2-sat-editor
-        # windeployqt e2-sat-editor.exe
+        # windeployqt6.exe e2-sat-editor.exe
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/e2-sat-editor/src/AppDir
