@@ -3,6 +3,9 @@ name: build-win32
 on:
   workflow_dispatch:
 
+env:
+  REF_TAG: v1.1.1
+
 jobs:
   build:
 
@@ -14,11 +17,21 @@ jobs:
 
     steps:
     - run: git config --global core.autocrlf input
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ctlcltd/e2-sat-editor
-        tag: v1.1.1
+        ref: ${{ env.REF_TAG }}
         path: e2-sat-editor
+
+    - name: Patch e2se_defs.h
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      shell: pwsh
+      run: |
+        tail -n 22 e2se_defs.h > e2se_defs.h.new
+        echo "#define E2SE_PORTABLE" >> e2se_defs.h.new
+        head -n +24 e2se_defs.h >> e2se_defs.h.new
+        mv e2se_defs.h e2se_defs.h.bak
+        mv e2se_defs.h.new e2se_defs.h
 
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
@@ -33,13 +46,13 @@ jobs:
         cmake \
         -G Ninja \
         -B build \
-        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
         -DWITH_QT5=ON
 
     - name: Build
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       shell: msys2 {0}
-      run: cmake --build build --config ${{env.BUILD_TYPE}}
+      run: cmake --build build --config ${{ env.BUILD_TYPE }}
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/e2-sat-editor/src/build
@@ -64,6 +77,6 @@ jobs:
     #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./Program\ Files\ (x86)/e2-sat-editor/e2-sat-editor.exe
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4.2.0
+      uses: actions/upload-artifact@v4
       with:
         path: ${{github.workspace}}/e2-sat-editor/src/AppDir

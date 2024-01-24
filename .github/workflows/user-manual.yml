@@ -1,4 +1,4 @@
-name: use-manual
+name: user-manual
 
 on:
   workflow_call:
@@ -8,7 +8,7 @@ on:
         default: ubuntu-latest
     outputs:
       run-id:
-        value: ${{ github.run_id }}
+        value: ${{github.run_id}}
   workflow_dispatch:
     inputs:
       runs-on:

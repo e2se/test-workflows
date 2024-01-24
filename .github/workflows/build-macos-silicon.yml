@@ -3,6 +3,9 @@ name: build-macos-silicon
 on:
   workflow_dispatch:
 
+env:
+  REF_TAG: v1.1.1
+
 jobs:
   build:
 
@@ -13,10 +16,10 @@ jobs:
       BUILD_TYPE: Release
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: ctlcltd/e2-sat-editor
-        tag: v1.1.1
+        ref: ${{ env.REF_TAG }}
         path: e2-sat-editor
 
     - name: Setup Homebrew
@@ -28,13 +31,13 @@ jobs:
         cmake \
         -G Ninja \
         -B build \
-        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
         -DCURL_INCLUDE_DIR=/usr/local/opt/curl/include \
         -DCURL_NO_CURL_CMAKE=ON
 
     - name: Build
       working-directory: ${{github.workspace}}/e2-sat-editor/src
-      run: cmake --build build --config ${{env.BUILD_TYPE}}
+      run: cmake --build build --config ${{ env.BUILD_TYPE }}
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/e2-sat-editor/src/build
@@ -57,6 +60,6 @@ jobs:
     #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./usr/local/e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4.2.0
+      uses: actions/upload-artifact@v4
       with:
         path: ${{github.workspace}}/e2-sat-editor/src/AppDir
