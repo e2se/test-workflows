@@ -46,9 +46,10 @@ jobs:
 
     - name: Deploy
       working-directory: ${{github.workspace}}/e2-sat-editor/src
-      # continue-on-error: true
+      continue-on-error: true
       run: |
         DESTDIR=../AppDir ninja -C build install
+        cp ../dist/macos/PkgInfo.in AppDir/usr/local/e2\ SAT\ Editor.app/Contents/PkgInfo
         # copy translations
         QMDIR=AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Resources/translations
         mkdir -p "$QMDIR"
