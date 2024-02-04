@@ -49,8 +49,15 @@ jobs:
       # continue-on-error: true
       run: |
         DESTDIR=../AppDir ninja -C build install
-        cd AppDir/usr/local
-        macdeployqt e2\ SAT\ Editor.app
+        # copy translations
+        QMDIR=AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Resources/translations
+        mkdir -p "$QMDIR"
+        cp ../dist/translations/*.qm "$QMDIR"
+        cp /usr/local/opt/qt/share/qt/translations/qt_*.qm "$QMDIR"
+        cp /usr/local/opt/qt/share/qt/translations/qtbase_*.qm "$QMDIR"
+        rm -R "$QMDIR/qt_help_*.qm"
+        # run deploy script
+        ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/e2-sat-editor/src/AppDir
