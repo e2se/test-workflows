@@ -9,7 +9,7 @@ env:
 jobs:
   build:
 
-    runs-on: macos-13
+    runs-on: macos-14
 
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -28,11 +28,10 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       run: |
-        export PKG_CONFIG_PATH="/usr/homebrew/opt/curl/lib/pkgconfig"
+        export PKG_CONFIG_PATH="/opt/homebrew/opt/curl/lib/pkgconfig"
         cmake \
         -G Ninja \
         -B build \
-        -DCMAKE_OSX_ARCHITECTURES="arm64" \
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
     - name: Build
@@ -54,8 +53,8 @@ jobs:
         QMDIR=AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Resources/translations
         mkdir -p "$QMDIR"
         cp ../dist/translations/*.qm "$QMDIR"
-        cp /usr/homebrew/opt/qt/share/qt/translations/qt_*.qm "$QMDIR"
-        cp /usr/homebrew/opt/qt/share/qt/translations/qtbase_*.qm "$QMDIR"
+        cp /opt/homebrew/opt/qt/share/qt/translations/qt_*.qm "$QMDIR"
+        cp /opt/homebrew/opt/qt/share/qt/translations/qtbase_*.qm "$QMDIR"
         rm -R "$QMDIR/qt_help_*.qm"
         # run deploy script
         ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app
