@@ -61,7 +61,7 @@ jobs:
         cp /usr/share/qt/translations/qt_*.qm AppDir/usr/share/qt/translations
         cp /usr/share/qt/translations/qtbase_*.qm AppDir/usr/share/qt/translations
         rm -R AppDir/usr/share/qt/translations/qt_help_*.qm
-        # pre-actions
+        # pre actions
         rm AppDir/usr/share/applications/e2se-cli.desktop
         mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
         mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
@@ -71,12 +71,12 @@ jobs:
         export QMAKE=qmake6
         linuxdeploy --appdir AppDir --plugin qt --output appimage
         # package
-        mkdir -p ../dist
-        mv e2_SAT_Editor-x86_64.AppImage ../dist/
-        chmod +x ../dist/e2_SAT_Editor-x86_64.AppImage
+        mkdir -p ../artifact
+        mv e2_SAT_Editor-x86_64.AppImage ../artifact/
+        chmod +x ../artifact/e2_SAT_Editor-x86_64.AppImage
 
     # - name: Test
-    #   working-directory: ${{github.workspace}}/e2-sat-editor/dist
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/artifact
     #   continue-on-error: true
     #   timeout-minutes: 1
     #   run: |
@@ -86,4 +86,4 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        path: ${{github.workspace}}/e2-sat-editor/dist
+        path: ${{github.workspace}}/e2-sat-editor/artifact

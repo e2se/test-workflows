@@ -76,15 +76,15 @@ jobs:
         # run windeployqt
         #windeployqt6.exe AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2-sat-editor.exe
         # package
-        mkdir -p ../dist/{cli,user-manual}
-        cp ../README.md ../dist/
-        cp COPYING ../dist/
-        mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2-sat-editor.exe ../dist/
-        mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2se-cli.exe ../dist/cli/
-        mv -R ${{github.workspace}}/user-manual ../dist/user-manual
+        mkdir -p ../artifact/{cli,user-manual}
+        cp ../README.md ../artifact/
+        cp COPYING ../artifact/
+        mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2-sat-editor.exe ../artifact/
+        mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2se-cli.exe ../artifact/cli/
+        mv -R ${{github.workspace}}/user-manual ../artifact/user-manual
 
     # - name: Test
-    #   working-directory: ${{github.workspace}}/e2-sat-editor/dist
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/artifact
     #   continue-on-error: true
     #   timeout-minutes: 1
     #   run: |
@@ -93,4 +93,4 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        path: ${{github.workspace}}/e2-sat-editor/dist
+        path: ${{github.workspace}}/e2-sat-editor/artifact
