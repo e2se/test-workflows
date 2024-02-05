@@ -75,7 +75,7 @@ jobs:
         cp COPYING ../artifact/
         mv AppDir/usr/local/e2\ SAT\ Editor.app ../artifact/
         mv AppDir/usr/local/e2se-cli ../artifact/cli/
-        mv ${{github.workspace}}/user-manual ../artifact/user-manual
+        mv ${{github.workspace}}/user-manual ../artifact/
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/e2-sat-editor/artifact
