@@ -7,9 +7,15 @@ env:
   REF_TAG: v1.1.1
 
 jobs:
+  user-manual:
+    uses: ./.github/workflows/user-manual.yml
+    with:
+      runs-on: ubuntu-latest
+
   build:
 
     runs-on: windows-2022
+    needs: user-manual
 
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -54,29 +60,37 @@ jobs:
       shell: msys2 {0}
       run: cmake --build build --config ${{ env.BUILD_TYPE }}
 
-    # - name: Test
-    #   working-directory: ${{github.workspace}}/e2-sat-editor/src/build
-    #   continue-on-error: true
-    #   timeout-minutes: 1
-    #   shell: msys2 {0}
-    #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./e2-sat-editor.exe
+    - name: Download user-manual artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: user-manual
+        path: user-manual
+        run-id: ${{ needs.user-manual.outputs.run-id }}
 
     - name: Deploy
       working-directory: ${{github.workspace}}/e2-sat-editor/src
-      # continue-on-error: true
+      continue-on-error: true
       shell: msys2 {0}
       run: |
         DESTDIR=../AppDir ninja -C build install
-        # cd AppDir/Program\ Files\ (x86)/e2-sat-editor
-        # windeployqt6.exe e2-sat-editor.exe
+        # run windeployqt
+        #windeployqt6.exe AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2-sat-editor.exe
+        # package
+        mkdir -p ../dist/{cli,user-manual}
+        cp ../README.md ../dist/
+        cp COPYING ../dist/
+        mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2-sat-editor.exe ../dist/
+        mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2se-cli.exe ../dist/cli/
+        mv -R ${{github.workspace}}/user-manual ../dist/user-manual
 
     # - name: Test
-    #   working-directory: ${{github.workspace}}/e2-sat-editor/src/AppDir
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/dist
     #   continue-on-error: true
     #   timeout-minutes: 1
-    #   run: DEBUG=1 QT_QPA_PLATFORM=minimal ./Program\ Files\ (x86)/e2-sat-editor/e2-sat-editor.exe
+    #   run: |
+    #     DEBUG=1 QT_QPA_PLATFORM=minimal e2-sat-editor.exe
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        path: ${{github.workspace}}/e2-sat-editor/src/AppDir
+        path: ${{github.workspace}}/e2-sat-editor/dist
