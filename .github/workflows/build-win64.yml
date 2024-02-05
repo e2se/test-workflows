@@ -60,7 +60,7 @@ jobs:
       shell: msys2 {0}
       run: cmake --build build --config ${{ env.BUILD_TYPE }}
 
-    - name: Download user-manual artifacts
+    - name: Download user-manual artifact
       uses: actions/download-artifact@v4
       with:
         name: user-manual
@@ -81,7 +81,7 @@ jobs:
         cp COPYING ../artifact/
         mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2-sat-editor.exe ../artifact/
         mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2se-cli.exe ../artifact/cli/
-        mv -R ${{github.workspace}}/user-manual ../artifact/user-manual
+        mv ${{github.workspace}}/user-manual ../artifact/user-manual
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/e2-sat-editor/artifact

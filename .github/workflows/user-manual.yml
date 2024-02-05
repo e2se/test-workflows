@@ -33,7 +33,7 @@ jobs:
       working-directory: ${{github.workspace}}/e2se-site/src
       run: |
         npm run dist.help -- --dest=${{github.workspace}}/e2se-site/out/
-    - name: Archive user-manual artifacts
+    - name: Archive user-manual artifact
       uses: actions/upload-artifact@v4
       with:
         name: user-manual
