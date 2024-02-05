@@ -72,8 +72,16 @@ jobs:
       shell: msys2 {0}
       run: |
         DESTDIR=../AppDir ninja -C build install
+        # pre actions
+        cp ../dist/translations/*.qm "AppDir/Program Files (x86)/e2-sat-editor/bin/"
         # run windeployqt
-        #windeployqt6.exe "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe"
+        windeployqt6.exe "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" \
+        --verbose 1 \
+        --no-network \
+        --no-system-d3d-compiler \
+        --add-plugin-types platform,styles \
+        --skip-plugin-types imageformats \
+        --exclude-plugins qdirect2d,qtuiotouchplugin
         # package
         mkdir -p ../artifact/{cli,user-manual}
         cp ../README.md ../artifact/

@@ -42,6 +42,7 @@ jobs:
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
       with:
+        msystem: MINGW32
         pacboy: >-
           cc:i cmake:i ninja:i qt5-base:i qt5-translations:i qt5-tools:i curl:i
 
@@ -73,8 +74,13 @@ jobs:
       shell: msys2 {0}
       run: |
         DESTDIR=../AppDir ninja -C build install
+        # pre actions
+        cp ../dist/translations/*.qm "AppDir/Program Files (x86)/e2-sat-editor/bin/"
         # run windeployqt
-        #windeployqt.exe "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe"
+        windeployqt.exe "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" \
+        --verbose 1 /
+        --no-network \
+        --no-system-d3d-compiler
         # package
         mkdir -p ../artifact/{cli,user-manual}
         cp ../README.md ../artifact/
