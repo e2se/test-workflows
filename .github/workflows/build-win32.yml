@@ -75,10 +75,11 @@ jobs:
       run: |
         DESTDIR=../AppDir ninja -C build install
         # pre actions
+        mkdir -p "AppDir/Program Files (x86)/e2-sat-editor/bin/translations"
         cp ../dist/translations/*.qm "AppDir/Program Files (x86)/e2-sat-editor/bin/"
         # run windeployqt
         windeployqt.exe "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" \
-        --verbose 1 /
+        --verbose 1 \
         --no-network \
         --no-system-d3d-compiler
         # package
