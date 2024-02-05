@@ -33,9 +33,9 @@ jobs:
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       shell: pwsh
       run: |
-        tail -n 22 e2se_defs.h > e2se_defs.h.new
+        head -n 22 e2se_defs.h > e2se_defs.h.new
         echo "#define E2SE_PORTABLE" >> e2se_defs.h.new
-        head -n +24 e2se_defs.h >> e2se_defs.h.new
+        tail -n +24 e2se_defs.h >> e2se_defs.h.new
         mv e2se_defs.h e2se_defs.h.bak
         mv e2se_defs.h.new e2se_defs.h
 
