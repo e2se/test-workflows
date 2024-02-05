@@ -73,13 +73,13 @@ jobs:
       run: |
         DESTDIR=../AppDir ninja -C build install
         # run windeployqt
-        #windeployqt6.exe AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2-sat-editor.exe
+        #windeployqt6.exe "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe"
         # package
         mkdir -p ../artifact/{cli,user-manual}
         cp ../README.md ../artifact/
         cp COPYING ../artifact/
-        mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2-sat-editor.exe ../artifact/
-        mv AppDir/Program\ Files\ (x86)/e2-sat-editor/bin/e2se-cli.exe ../artifact/cli/
+        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" ../artifact/
+        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2se-cli.exe" ../artifact/cli/
         mv ${{github.workspace}}/user-manual ../artifact/
 
     # - name: Test
