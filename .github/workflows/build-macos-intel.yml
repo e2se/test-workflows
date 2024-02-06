@@ -18,7 +18,6 @@ jobs:
     needs: user-manual
 
     env:
-      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
       BUILD_TYPE: Release
 
     steps:
@@ -58,11 +57,11 @@ jobs:
         DESTDIR=../AppDir ninja -C build install
         cp ../dist/macos/PkgInfo.in AppDir/usr/local/e2\ SAT\ Editor.app/Contents/PkgInfo
         # copy translations
-        QMDIR=AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Resources/translations
+        QMDIR="AppDir/Program Files (x86)/e2-sat-editor/bin/translations"
         mkdir -p "$QMDIR"
         cp ../dist/translations/*.qm "$QMDIR"
-        cp /usr/local/opt/qt/share/qt/translations/qt_*.qm "$QMDIR"
-        cp /usr/local/opt/qt/share/qt/translations/qtbase_*.qm "$QMDIR"
+        cp /mingw64/lib/qt6/translations/qt_*.qm "$QMDIR"
+        cp /mingw64/lib/qt6/translations/qtbase_*.qm "$QMDIR"
         rm -R "$QMDIR"/qt_help_*.qm
         # run deploy script
         bash ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app
@@ -71,8 +70,8 @@ jobs:
         strip AppDir/usr/local/e2se-cli
         # package
         mkdir -p ../artifact/{cli,user-manual}
-        cp ../README.md ../artifact/
-        cp COPYING ../artifact/
+        cp ../dist/common/Readme.txt.in ../artifact/Readme.txt
+        cp COPYING ../artifact/License.txt
         mv AppDir/usr/local/e2\ SAT\ Editor.app ../artifact/
         mv AppDir/usr/local/e2se-cli ../artifact/cli/
         mv ${{github.workspace}}/user-manual ../artifact/
