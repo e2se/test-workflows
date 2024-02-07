@@ -88,7 +88,7 @@ jobs:
         -qt-version 5 \
         -modules Core,Gui,Widgets,PrintSupport \
         -plugins platforms,styles,printsupport \
-        -libraries libcurl-4.dll,libcrypto-3.dll,libidn2-0.dll,libnghttp2-14.dll,libpsl-5.dll,libssh2.dll,libssl-3.dll,libunistring-5.dll
+        -libraries libcurl-4.dll,libcrypto-3.dll,libidn2-0.dll,libnghttp2-14.dll,libpsl-5.dll,libssh2-1.dll,libssl-3.dll,libunistring-5.dll
         # post actions
         rm "AppDir/Program Files (x86)/e2-sat-editor/bin/platforms/qdirect2d.dll"
         # package
@@ -96,9 +96,10 @@ jobs:
         cp ../dist/common/Readme.txt.in ../artifact/Readme.txt
         cp COPYING ../artifact/License.txt
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"*.dll ../artifact/
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"{platforms,styles,printsupport} ../artifact/
+        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"{platforms,styles,printsupport,translations} ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2se-cli.exe" ../artifact/cli/
+        cp ../artifact/{libgcc_s_dw2-1,libstdc++-6,libwinpthread-1}.dll ../artifact/cli/
         mv "${{github.workspace}}/user-manual" ../artifact/
 
     # - name: Test

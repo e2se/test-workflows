@@ -37,6 +37,9 @@ jobs:
         chmod +x linuxdeploy-x86_64.AppImage
         chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
         chmod +x appimagetool-x86_64.AppImage
+        mv linuxdeploy-x86_64.AppImage /usr/local/bin/linuxdeploy
+        mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
+        mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
