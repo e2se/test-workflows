@@ -90,6 +90,8 @@ jobs:
         mkdir -p ../artifact/{cli,user-manual}
         cp ../dist/common/Readme.txt.in ../artifact/Readme.txt
         cp COPYING ../artifact/License.txt
+        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"*.dll ../artifact/
+        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"{platforms,styles} ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2se-cli.exe" ../artifact/cli/
         mv ${{github.workspace}}/user-manual ../artifact/
