@@ -83,7 +83,6 @@ jobs:
         bash ../scripts/deployqtwin.sh "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" \
         --verbose \
         -modules Core,Gui,Widgets,PrintSupport \
-        -plugins platforms,styles,printsupport \
         -libraries libcurl-4.dll,libcrypto-3-x64.dll,libidn2-0.dll,libnghttp2-14.dll,libpsl-5.dll,libssh2.dll,libssl-3-x64.dll,libunistring-5.dll
         # post actions
         rm "AppDir/Program Files (x86)/e2-sat-editor/bin/platforms/qdirect2d.dll"
