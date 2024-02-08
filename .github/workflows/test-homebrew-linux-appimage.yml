@@ -1,4 +1,4 @@
-name: build-linux-appimage
+name: test-homebrew-linux-appimage
 
 on:
   workflow_dispatch:
@@ -23,10 +23,29 @@ jobs:
 
     - name: Setup Aptitude
       run: |
-        sudo apt-get install curl libcurl4-openssl-dev
-        sudo apt-get install qt6-base-dev qt6-translations-l10n
         sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
-        sudo apt-get install cmake ninja-build
+
+    - name: Setup Homebrew
+      run: |
+        bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+        brew install cmake ninja qt6 curl
+
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      run: |
+        PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
+        LD_LIBRARY_PATH=/home/linuxbrew/.linuxbrew/lib:$LD_LIBRARY_PATH
+        cmake \
+        -G Ninja \
+        -B build \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+        -DWITHOUT_CLI=ON
+
+    - name: Build
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      run: cmake --build build --config ${{ env.BUILD_TYPE }}
 
     - name: Download tools
       run: |
@@ -41,28 +60,16 @@ jobs:
         mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
         mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
 
-    - name: Configure CMake
-      working-directory: ${{github.workspace}}/e2-sat-editor/src
-      run: |
-        cmake \
-        -G Ninja \
-        -B build \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
-
-    - name: Build
-      working-directory: ${{github.workspace}}/e2-sat-editor/src
-      run: cmake --build build --config ${{ env.BUILD_TYPE }}
-
     - name: Deploy
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
       run: |
+        PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
         DESTDIR=../AppDir ninja -C build install
         # copy translations
         mkdir -p AppDir/usr/share/qt/translations
-        cp /usr/share/qt6/translations/qt_*.qm AppDir/usr/share/qt/translations
-        cp /usr/share/qt6/translations/qtbase_*.qm AppDir/usr/share/qt/translations
+        cp /home/linuxbrew/.linuxbrew/opt/qt/share/translations/qt_*.qm AppDir/usr/share/qt/translations
+        cp /home/linuxbrew/.linuxbrew/opt/qt/share/qtbase_*.qm AppDir/usr/share/qt/translations
         rm -R AppDir/usr/share/qt/translations/qt_help_*.qm
         # pre actions
         rm AppDir/usr/share/applications/e2se-cli.desktop
@@ -72,7 +79,7 @@ jobs:
         mv AppDir/usr/share/e2-sat-editor/Readme.txt.in AppDir/usr/share/doc/e2-sat-editor/readme
         mv AppDir/usr/share/e2-sat-editor/COPYING AppDir/usr/share/doc/e2-sat-editor/copyright
         # run linuxdeploy
-        export QMAKE=qmake6
+        LD_LIBRARY_PATH=/home/linuxbrew/.linuxbrew/lib:$LD_LIBRARY_PATH
         linuxdeploy --appdir AppDir --plugin qt --output appimage
         # package
         mv e2_SAT_Editor-x86_64.AppImage ../artifact
@@ -83,7 +90,6 @@ jobs:
     #   continue-on-error: true
     #   timeout-minutes: 1
     #   run: |
-    #     sudo mv /usr/lib/qt6 /usr/lib/qt6.bak
     #     DEBUG=1 QT_QPA_PLATFORM=minimal ./artifact
 
     - name: Upload Artifact
