@@ -47,6 +47,7 @@ jobs:
         cmake \
         -G Ninja \
         -B build \
+        -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
 
     - name: Build
