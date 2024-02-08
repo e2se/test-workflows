@@ -30,7 +30,7 @@ jobs:
 
     - name: Download tools
       run: |
-        sudo apt-get install fuse
+        sudo apt-get install fuse wget
         wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
         wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
         wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
@@ -60,9 +60,9 @@ jobs:
         DESTDIR=../AppDir ninja -C build install
         # copy translations
         mkdir -p AppDir/usr/share/qt/translations
-        cp /usr/share/qt/translations/qt_*.qm AppDir/usr/share/qt/translations
-        cp /usr/share/qt/translations/qtbase_*.qm AppDir/usr/share/qt/translations
-        rm -R AppDir/usr/share/qt/translations/qt_help_*.qm
+        cp /usr/share/qt6/translations/qt_*.qm AppDir/usr/share/qt/translations
+        cp /usr/share/qt6/translations/qtbase_*.qm AppDir/usr/share/qt/translations
+        rm -R AppDir/usr/share/qt6/translations/qt_help_*.qm
         # pre actions
         rm AppDir/usr/share/applications/e2se-cli.desktop
         mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
