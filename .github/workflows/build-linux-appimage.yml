@@ -23,14 +23,14 @@ jobs:
 
     - name: Setup Aptitude
       run: |
-        apt install curl libcurl4-openssl-dev
-        apt install qt6-base-dev qt6-translations-l10n
-        apt install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
-        apt install cmake ninja-build
+        sudo apt-get install curl libcurl4-openssl-dev
+        sudo apt-get install qt6-base-dev qt6-translations-l10n
+        sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
+        sudo apt-get install cmake ninja-build
 
     - name: Download tools
       run: |
-        apt install fuse
+        sudo apt-get install fuse
         wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
         wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
         wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
