@@ -68,8 +68,8 @@ jobs:
         DESTDIR=../AppDir ninja -C build install
         # copy translations
         mkdir -p AppDir/usr/share/qt/translations
-        cp /home/linuxbrew/.linuxbrew/opt/qt/share/translations/qt_*.qm AppDir/usr/share/qt/translations
-        cp /home/linuxbrew/.linuxbrew/opt/qt/share/qtbase_*.qm AppDir/usr/share/qt/translations
+        cp /home/linuxbrew/.linuxbrew/opt/qt/share/qt/translations/qt_*.qm AppDir/usr/share/qt/translations
+        cp /home/linuxbrew/.linuxbrew/opt/qt/share/qt/qtbase_*.qm AppDir/usr/share/qt/translations
         rm -R AppDir/usr/share/qt/translations/qt_help_*.qm
         # pre actions
         rm AppDir/usr/share/applications/e2se-cli.desktop
