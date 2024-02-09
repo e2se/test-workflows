@@ -1,4 +1,4 @@
-name: build-macos-silicon
+name: test-macos-silicon
 
 on:
   workflow_dispatch:
@@ -78,7 +78,7 @@ jobs:
     #   continue-on-error: true
     #   timeout-minutes: 1
     #   run: |
-    #     mv /opt/homebrew/Cellar /opt/homebrew/Cellar.bak 
+    #     sudo mv /opt/homebrew/Cellar /opt/homebrew/Cellar.bak 
     #     DEBUG=1 QT_QPA_PLATFORM=minimal ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
 
     - name: Upload Artifact

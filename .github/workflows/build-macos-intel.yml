@@ -78,7 +78,7 @@ jobs:
     #   continue-on-error: true
     #   timeout-minutes: 1
     #   run: |
-    #     mv /usr/local/Cellar /usr/local/Cellar.bak 
+    #     sudo mv /usr/local/Cellar /usr/local/Cellar.bak 
     #     DEBUG=1 QT_QPA_PLATFORM=minimal ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
 
     - name: Upload Artifact

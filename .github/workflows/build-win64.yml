@@ -28,16 +28,6 @@ jobs:
         # ref: ${{ env.REF_TAG }}
         path: e2-sat-editor
 
-    - name: Patch e2se_defs.h
-      working-directory: ${{github.workspace}}/e2-sat-editor/src
-      shell: pwsh
-      run: |
-        head -n 22 e2se_defs.h > e2se_defs.h.new
-        echo "#define E2SE_PORTABLE" >> e2se_defs.h.new
-        tail -n +24 e2se_defs.h >> e2se_defs.h.new
-        mv e2se_defs.h e2se_defs.h.bak
-        mv e2se_defs.h.new e2se_defs.h
-
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
       with:
@@ -100,8 +90,9 @@ jobs:
     #   working-directory: ${{github.workspace}}/e2-sat-editor/artifact
     #   continue-on-error: true
     #   timeout-minutes: 1
+    #   shell: pwsh
     #   run: |
-    #     DEBUG=1 QT_QPA_PLATFORM=minimal e2-sat-editor.exe
+    #     $env:DEBUG=1; $env:QT_QPA_PLATFORM=minimal; .\e2-sat-editor.exe
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4

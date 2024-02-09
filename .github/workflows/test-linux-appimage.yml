@@ -1,4 +1,4 @@
-name: build-linux-appimage
+name: test-linux-appimage
 
 on:
   workflow_dispatch:
@@ -48,7 +48,8 @@ jobs:
         -G Ninja \
         -B build \
         -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+        -DWITHOUT_CLI=ON
 
     - name: Build
       working-directory: ${{github.workspace}}/e2-sat-editor/src

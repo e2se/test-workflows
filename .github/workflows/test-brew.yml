@@ -6,11 +6,10 @@ on:
 jobs:
   test:
 
-    runs-on: [macos-13, arm64]
+    runs-on: macos-13
 
     steps:
     - name: Test
       run: |
         which brew
-        ls /opt
         ls /usr/local
