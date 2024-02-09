@@ -56,7 +56,7 @@ jobs:
       run: |
         DESTDIR=../AppDir ninja -C build install
         cp ../dist/macos/PkgInfo.in AppDir/usr/local/e2\ SAT\ Editor.app/Contents/PkgInfo
-        # copy translations
+        # pre actions
         QMDIR=AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Resources/translations
         mkdir -p "$QMDIR"
         cp ../dist/translations/*.qm "$QMDIR"
