@@ -26,13 +26,16 @@ jobs:
       with:
         repository: ctlcltd/e2se-site
         path: e2se-site
+
     - name: NPM install
       working-directory: ${{github.workspace}}/e2se-site/src
       run: npm install
+
     - name: Build user-manual
       working-directory: ${{github.workspace}}/e2se-site/src
       run: |
         npm run dist.help -- --dest=${{github.workspace}}/e2se-site/out/
+
     - name: Archive user-manual artifact
       uses: actions/upload-artifact@v4
       with:
