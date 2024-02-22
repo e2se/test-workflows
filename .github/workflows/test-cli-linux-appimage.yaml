@@ -54,9 +54,10 @@ jobs:
       run: |
         DESTDIR=../AppDir ninja -C build install
         # pre actions
-        mkdir -p AppDir/usr/share/{applications,metainfo}
+        mkdir -p AppDir/usr/share/{applications,metainfo,icons}
         cp ../../dist/xdg/e2se-cli.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se-cli.desktop
         cp ../../dist/xdg/io.github.ctlcltd.e2se-cli.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se-cli.appdata.xml
+        cp ../../dist/xdg/icons/64x64/e2-sat-editor.png AppDir/usr/share/icons/hicolor/64x64/apps/e2se-cli.png
         mkdir -p AppDir/usr/share/doc/e2se-cli
         cp ../../dist/common/Readme.txt.in AppDir/usr/share/doc/e2se-cli/readme
         cp ../COPYING AppDir/usr/share/doc/e2se-cli/copyright
