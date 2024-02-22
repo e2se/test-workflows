@@ -65,6 +65,8 @@ jobs:
         rm -R "$QMDIR"/qt_help_*.qm
         # run deploy script
         bash ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app
+        # post actions
+        chmod +x AppDir/usr/local/e2\ SAT\ Editor.app/e2\ SAT\ Editor
         # package
         mkdir -p ../artifact/{cli,user-manual}
         cp ../dist/common/Readme.txt.in ../artifact/Readme.txt

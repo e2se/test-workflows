@@ -82,6 +82,7 @@ jobs:
         rm "AppDir/Program Files (x86)/e2-sat-editor/bin/platforms/qdirect2d.dll"
         # package
         mkdir -p ../artifact/{cli,user-manual}
+        #TODO convert LF to CRLF
         cp ../dist/common/Readme.txt.in ../artifact/Readme.txt
         cp COPYING ../artifact/License.txt
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"*.dll ../artifact/
