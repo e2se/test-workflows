@@ -31,6 +31,7 @@ jobs:
       run: |
         brew remove --ignore-dependencies --force $(brew list)
         brew cleanup
+        brew update
         brew install cmake ninja qt6 curl
 
     - name: Configure CMake
