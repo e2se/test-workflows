@@ -30,7 +30,6 @@ jobs:
     - name: Setup Homebrew
       run: |
         brew update
-        brew upgrade
         brew install cmake ninja qt6 curl
 
     - name: Configure CMake
