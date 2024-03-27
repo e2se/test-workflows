@@ -35,8 +35,8 @@ jobs:
       run: |
         mkdir -p ../artifact
         #TODO convert LF to CRLF
-        cat ../dist/common/Readme.txt.in | sed "s/$/^M/" | sed "$ s/$/^Z/" > ../artifact/Readme.txt
-        cat COPYING | sed "s/$/^M/" | sed "$ s/$/^Z/" > ../artifact/License.txt
+        cat ../dist/common/Readme.txt.in | sed 's/$'"/`echo \\\r`/" > ../artifact/Readme.txt
+        cat COPYING | sed 's/$'"/`echo \\\r`/" > ../artifact/License.txt
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
