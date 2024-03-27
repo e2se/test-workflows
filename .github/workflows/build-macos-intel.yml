@@ -7,15 +7,15 @@ env:
   REF_TAG: v1.1.1
 
 jobs:
-  user-manual:
-    uses: ./.github/workflows/user-manual.yml
-    with:
-      runs-on: ubuntu-latest
+  # user-manual:
+  #   uses: ./.github/workflows/user-manual.yml
+  #   with:
+  #     runs-on: ubuntu-latest
 
   build:
 
     runs-on: macos-12
-    needs: user-manual
+    # needs: user-manual
 
     env:
       BUILD_TYPE: Release
@@ -33,7 +33,9 @@ jobs:
         brew remove --ignore-dependencies --force $(brew list)
         brew cleanup
         brew update
-        brew install cmake ninja
+        brew install cmake
+        brew install ninja
+        brew install pkg-config
         brew install curl
         brew install qt6
 
