@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.1.1
+  REF_TAG: v1.3.0
 
 jobs:
   build:
@@ -25,6 +25,7 @@ jobs:
       run: |
         sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
 
+    # brew (linux) qt6 does not contains qt qpa xcb plug-in
     - name: Setup Homebrew
       run: |
         bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -41,6 +42,7 @@ jobs:
         -B build \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+        -DRELEASE_MEDIUM=github \
         -DWITHOUT_CLI=ON
 
     - name: Build
@@ -71,7 +73,6 @@ jobs:
         cp /home/linuxbrew/.linuxbrew/opt/qt/share/qt/translations/qt_*.qm AppDir/usr/share/qt/translations
         cp /home/linuxbrew/.linuxbrew/opt/qt/share/qt/qtbase_*.qm AppDir/usr/share/qt/translations
         rm -R AppDir/usr/share/qt/translations/qt_help_*.qm
-        rm AppDir/usr/share/applications/e2se-cli.desktop
         mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
         mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
         mkdir -p AppDir/usr/share/doc/e2-sat-editor
@@ -83,13 +84,6 @@ jobs:
         # package
         mv e2_SAT_Editor-x86_64.AppImage ../artifact
         chmod +x ../artifact
-
-    # - name: Test
-    #   working-directory: ${{github.workspace}}/e2-sat-editor
-    #   continue-on-error: true
-    #   timeout-minutes: 1
-    #   run: |
-    #     DEBUG=1 QT_QPA_PLATFORM=minimal ./artifact
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4

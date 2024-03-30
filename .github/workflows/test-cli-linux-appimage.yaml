@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.2.0
+  REF_TAG: v1.3.0
 
 jobs:
   build:
@@ -42,7 +42,8 @@ jobs:
         -G Ninja \
         -B build \
         -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+        -DRELEASE_MEDIUM=github
 
     - name: Build
       working-directory: ${{github.workspace}}/e2-sat-editor/src/cli
@@ -67,13 +68,6 @@ jobs:
         # package
         mv e2se-cli-x86_64.AppImage ../../artifact
         chmod +x ../../artifact
-
-    - name: Test
-      working-directory: ${{github.workspace}}/e2-sat-editor
-      continue-on-error: true
-      timeout-minutes: 1
-      run: |
-        ./artifact --version
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4

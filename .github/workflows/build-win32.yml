@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.1.1
+  REF_TAG: v1.3.0
 
 jobs:
   user-manual:
@@ -32,6 +32,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         msystem: MINGW32
+        update: true
         pacboy: >-
           cc:i cmake:i ninja:i qt5-base:i qt5-translations:i curl:i
 
@@ -43,7 +44,9 @@ jobs:
         -G Ninja \
         -B build \
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
-        -DWITH_QT5=ON
+        -DRELEASE_MEDIUM=github \
+        -DWITH_QT5=ON \
+        -DDOWNLOAD_CURL_CABUNDLE=ON
 
     - name: Build
       working-directory: ${{github.workspace}}/e2-sat-editor/src
@@ -86,18 +89,11 @@ jobs:
         cat COPYING | sed 's/$'"/`echo \\\r`/" > ../artifact/License.txt
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"*.dll ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"{platforms,styles,printsupport,translations} ../artifact/
+        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/ca-certificates" ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2se-cli.exe" ../artifact/cli/
         cp ../artifact/{libgcc_s_dw2-1,libstdc++-6,libwinpthread-1}.dll ../artifact/cli/
         mv "${{github.workspace}}/user-manual" ../artifact/
-
-    # - name: Test
-    #   working-directory: ${{github.workspace}}/e2-sat-editor/artifact
-    #   continue-on-error: true
-    #   timeout-minutes: 1
-    #   shell: pwsh
-    #   run: |
-    #     $env:DEBUG=1; $env:QT_QPA_PLATFORM=minimal; .\e2-sat-editor.exe
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4

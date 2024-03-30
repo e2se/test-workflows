@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.1.1
+  REF_TAG: v1.3.0
 
 jobs:
   # user-manual:
@@ -46,7 +46,9 @@ jobs:
         cmake \
         -G Ninja \
         -B build \
-        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+        -DRELEASE_MEDIUM=github \
+        -DDOWNLOAD_CURL_CABUNDLE=ON
 
     - name: Build
       working-directory: ${{github.workspace}}/e2-sat-editor/src
@@ -75,7 +77,8 @@ jobs:
         # run deploy script
         bash ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app
         # post actions
-        chmod +x AppDir/usr/local/e2\ SAT\ Editor.app/e2\ SAT\ Editor
+        chmod +x AppDir/usr/local/e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
+        chmod +x AppDir/usr/local/e2se-cli
         # package
         mkdir -p ../artifact/{cli,user-manual}
         cp ../dist/common/Readme.txt.in ../artifact/Readme.txt
@@ -84,13 +87,8 @@ jobs:
         mv AppDir/usr/local/e2se-cli ../artifact/cli/
         mv "${{github.workspace}}/user-manual" ../artifact/
 
-    # - name: Test
-    #   working-directory: ${{github.workspace}}/e2-sat-editor/artifact
-    #   continue-on-error: true
-    #   timeout-minutes: 1
-    #   run: |
-    #     sudo mv /opt/homebrew/Cellar /opt/homebrew/Cellar.bak 
-    #     DEBUG=1 QT_QPA_PLATFORM=minimal ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
+    # - name: Tar files
+    #   run: tar -cvf artifact.tar ${{github.workspace}}/e2-sat-editor/artifact
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
