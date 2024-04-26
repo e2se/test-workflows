@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.3.0
+  REF_TAG: v1.4.0
 
 jobs:
   build:
@@ -61,8 +61,8 @@ jobs:
         mkdir -p AppDir/usr/share/icons/hicolor/64x64/apps
         cp ../../dist/xdg/icons/64x64/e2-sat-editor.png AppDir/usr/share/icons/hicolor/64x64/apps/e2se-cli.png
         mkdir -p AppDir/usr/share/doc/e2se-cli
-        cp ../../dist/common/Readme.txt.in AppDir/usr/share/doc/e2se-cli/readme
-        cp ../COPYING AppDir/usr/share/doc/e2se-cli/copyright
+        mv AppDir/usr/share/e2se-cli/Readme.txt AppDir/usr/share/doc/e2se-cli/README
+        mv AppDir/usr/share/e2se-cli/License.txt AppDir/usr/share/doc/e2se-cli/LICENSE
         # run linuxdeploy
         linuxdeploy --appdir AppDir --output appimage
         # package

@@ -4,18 +4,18 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.3.0
+  REF_TAG: v1.4.0
 
 jobs:
-  # user-manual:
-  #   uses: ./.github/workflows/user-manual.yml
-  #   with:
-  #     runs-on: ubuntu-latest
+  user-manual:
+    uses: ./.github/workflows/user-manual.yml
+    with:
+      runs-on: ubuntu-latest
 
   build:
 
     runs-on: macos-14
-    # needs: user-manual
+    needs: user-manual
 
     env:
       BUILD_TYPE: Release
@@ -81,8 +81,8 @@ jobs:
         chmod +x AppDir/usr/local/e2se-cli
         # package
         mkdir -p ../artifact/{cli,user-manual}
-        cp ../dist/common/Readme.txt.in ../artifact/Readme.txt
-        cp COPYING ../artifact/License.txt
+        mv AppDir/usr/local/Readme.txt ../artifact/
+        mv AppDir/usr/local/License.txt ../artifact/
         mv AppDir/usr/local/e2\ SAT\ Editor.app ../artifact/
         mv AppDir/usr/local/e2se-cli ../artifact/cli/
         mv "${{github.workspace}}/user-manual" ../artifact/

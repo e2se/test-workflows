@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.3.0
+  REF_TAG: v1.4.0
 
 jobs:
   user-manual:
@@ -81,8 +81,8 @@ jobs:
         rm "AppDir/Program Files (x86)/e2-sat-editor/bin/platforms/qdirect2d.dll"
         # package
         mkdir -p ../artifact/{cli,user-manual}
-        cat ../dist/common/Readme.txt.in | sed 's/$'"/`echo \\\r`/" > ../artifact/Readme.txt
-        cat COPYING | sed 's/$'"/`echo \\\r`/" > ../artifact/License.txt
+        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/Readme.txt" ../artifact/
+        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/License.txt" ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"*.dll ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"{platforms,styles,translations} ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/ca-certificates" ../artifact/
