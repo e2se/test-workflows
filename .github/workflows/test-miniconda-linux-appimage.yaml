@@ -41,6 +41,7 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       run: |
+        conda init
         conda activate
         cmake \
         -G Ninja \
@@ -71,6 +72,7 @@ jobs:
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
       run: |
+        conda init
         conda activate
         DESTDIR=../AppDir ninja -C build install
         # pre actions
