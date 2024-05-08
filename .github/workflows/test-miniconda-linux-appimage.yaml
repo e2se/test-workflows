@@ -41,8 +41,8 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       run: |
-        PATH=/home/runner/miniconda3/bin:$PATH
-        LD_LIBRARY_PATH=/home/runner/miniconda3/lib:$LD_LIBRARY_PATH
+        PATH=/home/runner/conda_pkgs_dir/bin:$PATH
+        LD_LIBRARY_PATH=/home/runner/conda_pkgs_dir/lib:$LD_LIBRARY_PATH
         cmake \
         -G Ninja \
         -B build \
@@ -72,8 +72,8 @@ jobs:
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
       run: |
-        PATH=/home/runner/miniconda3/bin:$PATH
-        LD_LIBRARY_PATH=/home/runner/miniconda3/lib:$LD_LIBRARY_PATH
+        PATH=/home/runner/conda_pkgs_dir/bin:$PATH
+        LD_LIBRARY_PATH=/home/runner/conda_pkgs_dir/lib:$LD_LIBRARY_PATH
         DESTDIR=../AppDir ninja -C build install
         # pre actions
         mkdir -p AppDir/usr/share/qt/translations
