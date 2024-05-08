@@ -28,9 +28,9 @@ jobs:
 
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v3
-        with:
-          miniconda-forge-version: latest
-          auto-update-conda: true
+      with:
+        miniconda-forge-version: latest
+        auto-update-conda: true
 
     - name: Install conda-forge packages
       run: |
