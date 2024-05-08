@@ -39,9 +39,10 @@ jobs:
         conda install conda-forge::curl
 
     - name: Configure CMake
-      shell: bash -el {0}
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       run: |
+        PATH=/home/runner/miniconda3/bin:$PATH
+        LD_LIBRARY_PATH=/home/runner/miniconda3/lib:$LD_LIBRARY_PATH
         cmake \
         -G Ninja \
         -B build \
@@ -68,10 +69,11 @@ jobs:
         mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
 
     - name: Deploy
-      shell: bash -el {0}
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
       run: |
+        PATH=/home/runner/miniconda3/bin:$PATH
+        LD_LIBRARY_PATH=/home/runner/miniconda3/lib:$LD_LIBRARY_PATH
         DESTDIR=../AppDir ninja -C build install
         # pre actions
         mkdir -p AppDir/usr/share/qt/translations
