@@ -59,7 +59,7 @@ jobs:
         sudo apt-get remove curl
         cmake \
         -B build \
-        -DCURL_LIBRARY=/home/runner/miniconda3/lib
+        -DCURL_LIBRARY=/home/runner/miniconda3/lib \
         -DCURL_INCLUDE_PATH=/home/runner/miniconda3/include
 
     - name: Build
