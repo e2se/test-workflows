@@ -41,6 +41,7 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       run: |
+        micromamba activate /home/runner/miniconda3
         cmake \
         -G Ninja \
         -B build \
@@ -70,6 +71,7 @@ jobs:
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
       run: |
+        micromamba activate /home/runner/miniconda3
         DESTDIR=../AppDir ninja -C build install
         # pre actions
         mkdir -p AppDir/usr/share/qt/translations
