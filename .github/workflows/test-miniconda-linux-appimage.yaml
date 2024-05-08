@@ -60,7 +60,7 @@ jobs:
         cmake \
         -B build \
         -DCURL_LIBRARY=/home/runner/miniconda3/lib \
-        -DCURL_INCLUDE_PATH=/home/runner/miniconda3/include
+        -DCURL_INCLUDE_DIR=/home/runner/miniconda3/include
 
     - name: Build
       working-directory: ${{github.workspace}}/e2-sat-editor/src
