@@ -14,6 +14,10 @@ jobs:
     env:
       BUILD_TYPE: Release
 
+    defaults:
+      run:
+        shell: bash -el {0}
+
     steps:
     - uses: actions/checkout@v4
       with:
