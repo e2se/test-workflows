@@ -96,7 +96,9 @@ jobs:
         mv AppDir/usr/share/e2-sat-editor/Readme.txt AppDir/usr/share/doc/e2-sat-editor/README
         mv AppDir/usr/share/e2-sat-editor/License.txt AppDir/usr/share/doc/e2-sat-editor/LICENSE
         # run linuxdeploy
+        export LD_LIBRARY_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
         linuxdeploy --appdir AppDir --plugin qt --output appimage
+        export LD_LIBRARY_PATH=
         # package
         mv e2_SAT_Editor-x86_64.AppImage ../artifact
         chmod +x ../artifact
