@@ -1,4 +1,4 @@
-name: test-cli-linux-appimage
+name: build-cli-linux-appimage
 
 on:
   workflow_dispatch:

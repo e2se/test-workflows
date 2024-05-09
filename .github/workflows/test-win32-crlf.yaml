@@ -1,4 +1,4 @@
-name: test-crlf-win32
+name: test-win32-crlf
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: test-homebrew-linux-appimage
+name: test-linux-miniconda-appimage
 
 on:
   workflow_dispatch:
@@ -14,6 +14,10 @@ jobs:
     env:
       BUILD_TYPE: Release
 
+    defaults:
+      run:
+        shell: bash -el {0}
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -23,7 +27,9 @@ jobs:
 
     - name: Setup Aptitude
       run: |
+        sudo apt-get install cmake ninja-build
         sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
+        sudo apt-get install curl libcurl4-openssl-dev
 
     - name: Download deploy tools
       run: |
@@ -38,25 +44,37 @@ jobs:
         mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
         mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
 
-    # brew (linux) qt6 does not contains qt qpa xcb plug-in
-    - name: Setup Homebrew
+    - name: Setup Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        miniforge-version: latest
+        auto-update-conda: true
+
+    - name: Install conda-forge packages
       run: |
-        bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
-        brew install cmake ninja qt6 curl
+        conda install conda-forge::qt6-main
+        conda install conda-forge::curl
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       run: |
-        PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
-        LD_LIBRARY_PATH=/home/linuxbrew/.linuxbrew/lib:$LD_LIBRARY_PATH
         cmake \
         -G Ninja \
         -B build \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
         -DRELEASE_MEDIUM=github \
-        -DWITHOUT_CLI=ON
+        -DWITHOUT_CLI=ON \
+        -DDOWNLOAD_CURL_CABUNDLE=ON
+
+    - name: Force fresh libcurl4 dependency
+      working-directory: ${{github.workspace}}/e2-sat-editor/src
+      run: |
+        sudo apt-get remove curl
+        cmake \
+        -B build \
+        -DCURL_LIBRARY=/home/runner/miniconda3/envs/test/lib \
+        -DCURL_INCLUDE_DIR=/home/runner/miniconda3/envs/test/include
 
     - name: Build
       working-directory: ${{github.workspace}}/e2-sat-editor/src
@@ -66,24 +84,20 @@ jobs:
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
       run: |
-        PATH=/home/linuxbrew/.linuxbrew/bin:$PATH
         DESTDIR=../AppDir ninja -C build install
         # pre actions
-        mkdir -p AppDir/usr/share/qt/translations
-        cp /home/linuxbrew/.linuxbrew/opt/qt/share/qt/translations/qt_*.qm AppDir/usr/share/qt/translations
-        cp /home/linuxbrew/.linuxbrew/opt/qt/share/qt/qtbase_*.qm AppDir/usr/share/qt/translations
-        rm -R AppDir/usr/share/qt/translations/qt_help_*.qm
         mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
         mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
         mkdir -p AppDir/usr/share/doc/e2-sat-editor
         mv AppDir/usr/share/e2-sat-editor/Readme.txt AppDir/usr/share/doc/e2-sat-editor/readme
         mv AppDir/usr/share/e2-sat-editor/License.txt AppDir/usr/share/doc/e2-sat-editor/copyright
         # run linuxdeploy
-        LD_LIBRARY_PATH=/home/linuxbrew/.linuxbrew/lib:$LD_LIBRARY_PATH
+        export LD_LIBRARY_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
+        export QMAKE=qmake6
         linuxdeploy --appdir AppDir --plugin qt --output appimage
+        export LD_LIBRARY_PATH=
         # package
         mv e2_SAT_Editor-x86_64.AppImage ../artifact
-        chmod +x ../artifact
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
