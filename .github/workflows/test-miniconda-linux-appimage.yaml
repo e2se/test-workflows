@@ -19,17 +19,17 @@ jobs:
         shell: bash -el {0}
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        repository: ctlcltd/e2-sat-editor
-        # ref: ${{ env.REF_TAG }}
-        path: e2-sat-editor
+    # - uses: actions/checkout@v4
+    #   with:
+    #     repository: ctlcltd/e2-sat-editor
+    #     # ref: ${{ env.REF_TAG }}
+    #     path: e2-sat-editor
 
-    - name: Setup Aptitude
-      run: |
-        sudo apt-get install cmake ninja-build
-        sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
-        sudo apt-get install curl libcurl4-openssl-dev
+    # - name: Setup Aptitude
+    #   run: |
+    #     sudo apt-get install cmake ninja-build
+    #     sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
+    #     sudo apt-get install curl libcurl4-openssl-dev
 
     - name: Setup Miniconda
       uses: conda-incubator/setup-miniconda@v3
@@ -42,65 +42,69 @@ jobs:
         conda install conda-forge::qt6-main
         conda install conda-forge::curl
 
-    - name: Configure CMake
-      working-directory: ${{github.workspace}}/e2-sat-editor/src
-      run: |
-        cmake \
-        -G Ninja \
-        -B build \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
-        -DRELEASE_MEDIUM=github \
-        -DWITHOUT_CLI=ON
+    - run: |
+        echo "ls /home/runner/miniconda3/envs/test/share/qt6/translations"
+        ls /home/runner/miniconda3/envs/test/share/qt6/translations
 
-    - name: libcurl4
-      working-directory: ${{github.workspace}}/e2-sat-editor/src
-      run: |
-        sudo apt-get remove curl
-        cmake \
-        -B build \
-        -DCURL_LIBRARY=/home/runner/miniconda3/envs/test/lib \
-        -DCURL_INCLUDE_DIR=/home/runner/miniconda3/envs/test/include
+    # - name: Configure CMake
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src
+    #   run: |
+    #     cmake \
+    #     -G Ninja \
+    #     -B build \
+    #     -DCMAKE_INSTALL_PREFIX=/usr \
+    #     -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+    #     -DRELEASE_MEDIUM=github \
+    #     -DWITHOUT_CLI=ON
 
-    - name: Build
-      working-directory: ${{github.workspace}}/e2-sat-editor/src
-      run: cmake --build build --config ${{ env.BUILD_TYPE }}
+    # - name: libcurl4
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src
+    #   run: |
+    #     sudo apt-get remove curl
+    #     cmake \
+    #     -B build \
+    #     -DCURL_LIBRARY=/home/runner/miniconda3/envs/test/lib \
+    #     -DCURL_INCLUDE_DIR=/home/runner/miniconda3/envs/test/include
 
-    - name: Download tools
-      run: |
-        sudo apt-get install fuse wget
-        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-        wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
-        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-        chmod +x linuxdeploy-x86_64.AppImage
-        chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
-        chmod +x appimagetool-x86_64.AppImage
-        mv linuxdeploy-x86_64.AppImage /usr/local/bin/linuxdeploy
-        mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
-        mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
+    # - name: Build
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src
+    #   run: cmake --build build --config ${{ env.BUILD_TYPE }}
 
-    - name: Deploy
-      working-directory: ${{github.workspace}}/e2-sat-editor/src
-      continue-on-error: true
-      run: |
-        DESTDIR=../AppDir ninja -C build install
-        # pre actions
-        mkdir -p AppDir/usr/share/qt/translations
-        cp /home/runner/miniconda3/envs/test/share/qt6/translations/qt_*.qm AppDir/usr/share/qt/translations
-        cp /home/runner/miniconda3/envs/test/share/qt6/translations/qtbase_*.qm AppDir/usr/share/qt/translations
-        rm -R AppDir/usr/share/qt6/translations/qt_help_*.qm
-        mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
-        mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
-        mkdir -p AppDir/usr/share/doc/e2-sat-editor
-        mv AppDir/usr/share/e2-sat-editor/Readme.txt AppDir/usr/share/doc/e2-sat-editor/README
-        mv AppDir/usr/share/e2-sat-editor/License.txt AppDir/usr/share/doc/e2-sat-editor/LICENSE
-        # run linuxdeploy
-        linuxdeploy --appdir AppDir --plugin qt --output appimage
-        # package
-        mv e2_SAT_Editor-x86_64.AppImage ../artifact
-        chmod +x ../artifact
+    # - name: Download tools
+    #   run: |
+    #     sudo apt-get install fuse wget
+    #     wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+    #     wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+    #     wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
+    #     chmod +x linuxdeploy-x86_64.AppImage
+    #     chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
+    #     chmod +x appimagetool-x86_64.AppImage
+    #     mv linuxdeploy-x86_64.AppImage /usr/local/bin/linuxdeploy
+    #     mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
+    #     mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        path: ${{github.workspace}}/e2-sat-editor/artifact
+    # - name: Deploy
+    #   working-directory: ${{github.workspace}}/e2-sat-editor/src
+    #   continue-on-error: true
+    #   run: |
+    #     DESTDIR=../AppDir ninja -C build install
+    #     # pre actions
+    #     mkdir -p AppDir/usr/share/qt/translations
+    #     cp /home/runner/miniconda3/envs/test/share/qt6/translations/qt_*.qm AppDir/usr/share/qt/translations
+    #     cp /home/runner/miniconda3/envs/test/share/qt6/translations/qtbase_*.qm AppDir/usr/share/qt/translations
+    #     rm -R AppDir/usr/share/qt6/translations/qt_help_*.qm
+    #     mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
+    #     mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
+    #     mkdir -p AppDir/usr/share/doc/e2-sat-editor
+    #     mv AppDir/usr/share/e2-sat-editor/Readme.txt AppDir/usr/share/doc/e2-sat-editor/README
+    #     mv AppDir/usr/share/e2-sat-editor/License.txt AppDir/usr/share/doc/e2-sat-editor/LICENSE
+    #     # run linuxdeploy
+    #     linuxdeploy --appdir AppDir --plugin qt --output appimage
+    #     # package
+    #     mv e2_SAT_Editor-x86_64.AppImage ../artifact
+    #     chmod +x ../artifact
+
+    # - name: Upload Artifact
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     path: ${{github.workspace}}/e2-sat-editor/artifact
