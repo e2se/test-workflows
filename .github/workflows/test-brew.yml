@@ -9,7 +9,7 @@ jobs:
     runs-on: macos-13
 
     steps:
-    - name: Test
+    - name: Test Homebrew
       run: |
         which brew
         ls /usr/local

@@ -24,7 +24,7 @@ jobs:
       with:
         msystem: MINGW32
 
-    - name: Deploy
+    - name: Test
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
       shell: msys2 {0}
@@ -34,7 +34,7 @@ jobs:
         cat ../dist/common/Readme.txt.in | sed 's/$'"/`echo \\\r`/" > ../artifact/Readme.txt
         cat COPYING | sed 's/$'"/`echo \\\r`/" > ../artifact/License.txt
 
-    - name: Upload Artifact
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         path: ${{github.workspace}}/e2-sat-editor/artifact
