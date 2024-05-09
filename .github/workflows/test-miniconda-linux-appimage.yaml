@@ -43,16 +43,18 @@ jobs:
         conda install conda-forge::curl
 
     - run: |
-        echo "ls /home/runner"
-        ls /home/runner
-        echo "ls /home/runner/miniconda3"
-        ls /home/runner/miniconda3
-        echo "ls /home/runner/conda_pkgs_dir"
-        ls /home/runner/conda_pkgs_dir
-        echo "ls /home/runner/miniconda3/envs"
-        ls /home/runner/miniconda3/envs
-        echo "ls /home/runner/miniconda3/envs/test"
-        ls /home/runner/miniconda3/envs/test
+        echo "ls /home/runner/miniconda3/share"
+        ls /home/runner/miniconda3/share
+        echo "ls /home/runner/miniconda3/envs/test/share"
+        ls /home/runner/miniconda3/envs/test/share
+        echo "ls /home/runner/miniconda3/include"
+        ls /home/runner/miniconda3/include
+        echo "ls /home/runner/miniconda3/envs/test/include"
+        ls /home/runner/miniconda3/envs/test/include
+        echo "ls /home/runner/miniconda3/lib"
+        ls /home/runner/miniconda3/lib
+        echo "ls /home/runner/miniconda3/envs/test/lib"
+        ls /home/runner/miniconda3/envs/test/lib
 
     # - name: Configure CMake
     #   working-directory: ${{github.workspace}}/e2-sat-editor/src
@@ -71,8 +73,8 @@ jobs:
     #     sudo apt-get remove curl
     #     cmake \
     #     -B build \
-    #     -DCURL_LIBRARY=/home/runner/miniconda3/lib \
-    #     -DCURL_INCLUDE_DIR=/home/runner/miniconda3/include
+    #     -DCURL_LIBRARY=/home/runner/miniconda3/envs/test/lib \
+    #     -DCURL_INCLUDE_DIR=/home/runner/miniconda3/envs/test/include
 
     # - name: Build
     #   working-directory: ${{github.workspace}}/e2-sat-editor/src
@@ -98,8 +100,8 @@ jobs:
     #     DESTDIR=../AppDir ninja -C build install
     #     # pre actions
     #     mkdir -p AppDir/usr/share/qt/translations
-    #     cp /home/runner/miniconda3/share/qt6/translations/qt_*.qm AppDir/usr/share/qt/translations
-    #     cp /home/runner/miniconda3/share/qt6/translations/qtbase_*.qm AppDir/usr/share/qt/translations
+    #     cp /home/runner/miniconda3/envs/test/share/qt6/translations/qt_*.qm AppDir/usr/share/qt/translations
+    #     cp /home/runner/miniconda3/envs/test/share/qt6/translations/qtbase_*.qm AppDir/usr/share/qt/translations
     #     rm -R AppDir/usr/share/qt6/translations/qt_help_*.qm
     #     mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
     #     mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
