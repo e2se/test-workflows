@@ -13,11 +13,11 @@ jobs:
       run: |
         echo $(which port)
 
+    - name: Setup MacPorts
+      uses: melusina-org/setup-macports@v1.1.3
+
     - name: Test 1
       run: |
-        URL="https://github.com/macports/macports-base/releases/download/v2.10.2/MacPorts-2.10.2-13-Ventura.pkg"
-        curl -L "$URL" -o ./MacPorts-2.10.2-13-Ventura.pkg
-        sudo installer -verbose -pkg MacPorts-2.10.2-13-Ventura.pkg -target /
         port -h
         port diagnose --quiet
 
