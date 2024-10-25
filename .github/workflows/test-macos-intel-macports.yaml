@@ -37,7 +37,10 @@ jobs:
     - name: Install port packages
       continue-on-error: true
       run: |
-        sudo port -N install pkg-config cmake ninja curl qt6-qtbase qt6-qttranslations
+        sudo port -N install pkgconfig
+        sudo port -N cmake ninja
+        sudo port -N curl
+        sudo port -N qt6-qtbase qt6-qttranslations
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
