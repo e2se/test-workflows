@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.5.0
+  REF_TAG: v1.6.0
 
 jobs:
   user-manual:
@@ -61,6 +61,14 @@ jobs:
         path: user-manual
         run-id: ${{ needs.user-manual.outputs.run-id }}
 
+    - name: Download deploy script
+      working-directory: ${{github.workspace}}/e2-sat-editor
+      continue-on-error: true
+      run: |
+        curl -L https://github.com/e2se/deployqtmacx/archive/refs/heads/main.tar.gz -o main.tar.gz
+        tar -xf main.tar.gz
+        mv deployqtmacx-main/deployqtmacx.sh scripts/deployqtmacx.sh
+
     - name: Deploy artifact
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
@@ -77,7 +85,7 @@ jobs:
         # run deploy script
         bash ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app
         # post actions
-        chmod 644 AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Frameworks/*.dylib
+        chmod -R 644 AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Frameworks/*.dylib
         chmod +x AppDir/usr/local/e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
         chmod +x AppDir/usr/local/e2se-cli
         # package

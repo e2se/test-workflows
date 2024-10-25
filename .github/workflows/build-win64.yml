@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.5.0
+  REF_TAG: v1.6.0
 
 jobs:
   user-manual:
@@ -59,6 +59,15 @@ jobs:
         path: user-manual
         run-id: ${{ needs.user-manual.outputs.run-id }}
 
+    - name: Download deploy script
+      working-directory: ${{github.workspace}}/e2-sat-editor
+      continue-on-error: true
+      shell: msys2 {0}
+      run: |
+        curl -L https://github.com/e2se/deployqtwin/archive/refs/heads/main.tar.gz -o main.tar.gz
+        tar -xf main.tar.gz
+        mv deployqtwin-main/deployqtwin.sh scripts/deployqtwin.sh
+
     - name: Deploy artifact
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       continue-on-error: true
@@ -75,7 +84,7 @@ jobs:
         # run deploy script
         bash ../scripts/deployqtwin.sh "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" \
         --verbose \
-        -qt-version 6.7.2 \
+        -qt-version 6.7.3 \
         -modules Core,Gui,Widgets,PrintSupport \
         -libraries libcurl-4.dll,libcrypto-3-x64.dll,libidn2-0.dll,libnghttp2-14.dll,libnghttp3-9.dll,libpsl-5.dll,libssh2-1.dll,libssl-3-x64.dll,libunistring-5.dll
         # post actions
