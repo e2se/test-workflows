@@ -88,7 +88,9 @@ jobs:
         # run deploy script
         bash ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app -environment port
         # post actions
-        chmod -R 644 AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Frameworks/*.dylib
+        chmod 644 AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Frameworks/*.dylib
+        chmod -R 755 AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Frameworks/*.framework
+        chmod 644 AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Frameworks/**/**/**/*
         chmod +x AppDir/usr/local/e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
         chmod +x AppDir/usr/local/e2se-cli
         # package
