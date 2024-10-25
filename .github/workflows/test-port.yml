@@ -17,7 +17,7 @@ jobs:
       run: |
         URL="https://github.com/macports/macports-base/releases/download/v2.10.2/MacPorts-2.10.2-13-Ventura.pkg"
         curl -L "$URL" -o ./MacPorts-2.10.2-13-Ventura.pkg
-        installer -verbose -pkg MacPorts-2.10.2-13-Ventura.pkg -target /
+        sudo installer -verbose -pkg MacPorts-2.10.2-13-Ventura.pkg -target /
         port -h
         port diagnose --quiet
 
