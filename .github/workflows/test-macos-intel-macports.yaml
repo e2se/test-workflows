@@ -30,14 +30,14 @@ jobs:
     - name: Setup MacPorts
       uses: melusina-org/setup-macports@v1.1.3
 
+    - continue-on-error: true
+      run: |
+        sudo port -N selfupdate
+
     - name: Install port packages
       continue-on-error: true
       run: |
-        sudo port -N selfupdate
-        sudo port -N install pkg-config
-        sudo port -N install cmake ninja
-        sudo port -N install curl
-        sudo port -N install qt6-qtbase qt6-qttranslations
+        sudo port -N install pkg-config cmake ninja curl qt6-qtbase qt6-qttranslations
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
