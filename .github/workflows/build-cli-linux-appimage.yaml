@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.6.0
+  REF_TAG: v1.7.0
 
 jobs:
   build:
