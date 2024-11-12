@@ -10,7 +10,7 @@ Repository used to test automated build.
 
 ### License
 
-Source code licensed under the terms of the [MIT License](https://github.com/ctlcltd/e2-sat-editor/blob/main/LICENSE-MIT).
+Source code licensed under the terms of the [MIT License](https://github.com/e2se/test-workflows/blob/main/LICENSE-MIT).
 
-It is also licensed under the terms of the [GNU GPLv3](https://github.com/ctlcltd/e2-sat-editor/blob/main/LICENSE-GPL-3.0-or-later).
+It is also licensed under the terms of the [GNU GPLv3](https://github.com/e2se/test-workflows/blob/main/LICENSE-GPL-3.0-or-later).
 
