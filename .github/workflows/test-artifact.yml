@@ -9,8 +9,27 @@ jobs:
     runs-on: macos-14
 
     steps:
-    - name: Test
+    - name: Download
       working-directory: ${{github.workspace}}
       continue-on-error: true
       run: |
-        machine
+        curl -L https://github.com/ctlcltd/e2-sat-editor/releases/download/v1.7.0/e2-sat-editor-1.7.0-unsigned-test-silicon-macos.zip -o artifact.zip
+        unzip -l artifact.zip
+        unzip artifact.zip -d artifact
+        ls -l artifact
+
+    - name: Test
+      working-directory: ${{github.workspace}}/artifact
+      continue-on-error: true
+      run: |
+        ls -l e2\ SAT\ Editor.app/Contents/MacOS
+        mkdir img
+        screencapture -C -T5 img/image.png &
+        DEBUG=1 ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor -style fusion &
+        sleep 6
+        killall e2\ SAT\ Editor
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${{github.workspace}}/artifact/img
