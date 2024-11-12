@@ -14,8 +14,8 @@ jobs:
       continue-on-error: true
       run: |
         curl -L https://github.com/ctlcltd/e2-sat-editor/releases/download/v1.7.0/e2-sat-editor-1.7.0-unsigned-test-silicon-macos.zip -o artifact.zip
-        mkdir artifact
-        unzip -l artifact.zip -d artifact
+        unzip -l artifact.zip
+        unzip artifact.zip -d artifact
         ls -l artifact
 
     - name: Test
