@@ -13,7 +13,7 @@ jobs:
       working-directory: ${{github.workspace}}
       continue-on-error: true
       run: |
-        curl -L https://github.com/ctlcltd/e2-sat-editor/releases/download/v1.6.0/e2-sat-editor-1.6.0-unsigned-test-silicon-macos.zip -o artifact.zip
+        curl -L https://github.com/ctlcltd/e2-sat-editor/releases/download/v1.7.0/e2-sat-editor-1.7.0-unsigned-test-silicon-macos.zip -o artifact.zip
         unzip -l artifact.zip
         unzip artifact.zip -d artifact
         ls -l artifact
