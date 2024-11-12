@@ -23,7 +23,8 @@ jobs:
       continue-on-error: true
       run: |
         ls -l e2\ SAT\ Editor.app/Contents/MacOS
-        nohup ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor -style fusion --debug &
-        sleep 5
-        killall e2\ SAT\ Editor
-        cat nohup.out
+        ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor -style fusion --debug &
+        # nohup ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor -style fusion --debug &
+        # sleep 5
+        # killall e2\ SAT\ Editor
+        # cat nohup.out
