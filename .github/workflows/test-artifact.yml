@@ -23,11 +23,12 @@ jobs:
       continue-on-error: true
       run: |
         ls -l e2\ SAT\ Editor.app/Contents/MacOS
-        mkdir img
-        screencapture -C -T5 img/image.png &
-        DEBUG=1 ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor &
-        sleep 6
-        killall e2\ SAT\ Editor
+        # mkdir img
+        # screencapture -C -T5 img/image.png &
+        # DEBUG=1 ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &
+        # sleep 6
+        # killall e2\ SAT\ Editor
+        DEBUG=1 ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
