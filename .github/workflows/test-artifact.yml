@@ -33,7 +33,7 @@ jobs:
         echo "sleep 9" >> subcmd.sh
         echo "killall e2\ SAT\ Editor" >> subcmd.sh
         chmod +x subcmd.sh
-        nohup bash subcmd.sh &        
+        nohup bash subcmd.sh
         mv nohup.out img
 
     - name: Upload artifact
