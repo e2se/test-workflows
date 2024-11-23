@@ -28,13 +28,10 @@ jobs:
         # ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &
         # sleep 6
         # killall e2\ SAT\ Editor
-        echo \#\!/bin/bash >> subcmd.sh
-        echo "./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &" >> subcmd.sh
-        echo "sleep 9" >> subcmd.sh
-        echo "killall e2\ SAT\ Editor" >> subcmd.sh
-        chmod +x subcmd.sh
-        nohup bash subcmd.sh
-        mv nohup.out img
+        ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug > log.out 2> log.out < /dev/null &
+        sleep 9
+        killall e2\ SAT\ Editor
+        mv log.out img
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
