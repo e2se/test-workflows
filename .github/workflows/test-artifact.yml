@@ -24,14 +24,10 @@ jobs:
       run: |
         ls -l e2\ SAT\ Editor.app/Contents/MacOS
         mkdir img
-        # screencapture -C -T5 img/image.png &
-        # ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &
-        # sleep 6
-        # killall e2\ SAT\ Editor
-        ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug > log.out 2> log.out < /dev/null &
-        sleep 9
+        screencapture -C -T5 img/image.png &
+        ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &
+        sleep 6
         killall e2\ SAT\ Editor
-        mv log.out img
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
