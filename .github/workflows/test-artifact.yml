@@ -25,7 +25,7 @@ jobs:
         ls -l e2\ SAT\ Editor.app/Contents/MacOS
         mkdir img
         screencapture -C -T5 img/image.png &
-        ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &
+        DEBUG=1 ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor &
         sleep 6
         killall e2\ SAT\ Editor
 
