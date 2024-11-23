@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.7.0
+  REF_TAG: v1.8.0
 
 jobs:
   build:
@@ -26,6 +26,7 @@ jobs:
         sudo apt-get install curl libcurl4-openssl-dev
         sudo apt-get install qt6-base-dev qt6-translations-l10n
         sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
+        sudo apt-get install libcups2-dev
         sudo apt-get install cmake ninja-build
 
     - name: Download deploy tools
