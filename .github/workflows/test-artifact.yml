@@ -6,7 +6,7 @@ on:
 jobs:
   test:
 
-    runs-on: macos-15
+    runs-on: macos-14
 
     steps:
     - name: Download
@@ -24,10 +24,14 @@ jobs:
       run: |
         ls -l e2\ SAT\ Editor.app/Contents/MacOS
         mkdir img
-        screencapture -C -T5 img/image.png &
-        ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &
-        sleep 6
+        # screencapture -C -T5 img/image.png &
+        # ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &
+        # sleep 6
+        # killall e2\ SAT\ Editor
+        nohup ./e2\ SAT\ Editor.app/Contents/MacOS/e2\ SAT\ Editor --debug &
+        sleep 9
         killall e2\ SAT\ Editor
+        mv nohup.out img
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
