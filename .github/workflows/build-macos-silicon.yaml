@@ -1,10 +1,10 @@
-name: test-macos-intel-macports
+name: build-macos-silicon
 
 on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.8.0
+  REF_TAG: v1.8.1
 
 jobs:
   user-manual:
@@ -14,7 +14,7 @@ jobs:
 
   build:
 
-    runs-on: macos-12
+    runs-on: macos-14
     needs: user-manual
 
     env:
@@ -28,7 +28,7 @@ jobs:
         path: e2-sat-editor
 
     - name: Setup MacPorts
-      uses: melusina-org/setup-macports@v1.1.3
+      uses: melusina-org/setup-macports@v1.1.5
 
     - continue-on-error: true
       run: |

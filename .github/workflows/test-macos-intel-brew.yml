@@ -1,10 +1,10 @@
-name: build-macos-intel
+name: test-macos-intel-brew
 
 on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.8.0
+  REF_TAG: v1.8.1
 
 jobs:
   user-manual:

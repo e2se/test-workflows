@@ -1,10 +1,10 @@
-name: build-macos-silicon
+name: build-macos-intel
 
 on:
   workflow_dispatch:
 
 env:
-  REF_TAG: v1.8.0
+  REF_TAG: v1.8.1
 
 jobs:
   user-manual:
@@ -14,7 +14,7 @@ jobs:
 
   build:
 
-    runs-on: macos-14
+    runs-on: macos-12
     needs: user-manual
 
     env:
@@ -27,22 +27,25 @@ jobs:
         # ref: ${{ env.REF_TAG }}
         path: e2-sat-editor
 
-    - name: Setup Homebrew
+    - name: Setup MacPorts
+      uses: melusina-org/setup-macports@v1.1.5
+
+    - continue-on-error: true
+      run: |
+        sudo port -N selfupdate
+
+    - name: Install port packages
       continue-on-error: true
       run: |
-        brew remove --ignore-dependencies --force $(brew list)
-        brew cleanup
-        brew update
-        brew install cmake
-        brew install ninja
-        brew install pkg-config
-        brew install curl
-        brew install qt6
+        sudo port -N install pkgconfig
+        sudo port -N install cmake ninja
+        sudo port -N install curl
+        sudo port -N install qt6-qtbase qt6-qttranslations
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       run: |
-        export PKG_CONFIG_PATH="/opt/homebrew/opt/curl/lib/pkgconfig"
+        export PKG_CONFIG_PATH="/opt/local/lib/pkgconfig"
         cmake \
         -G Ninja \
         -B build \
@@ -79,11 +82,11 @@ jobs:
         QMDIR=AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Resources/translations
         mkdir -p "$QMDIR"
         cp ../dist/translations/*.qm "$QMDIR"
-        cp /opt/homebrew/opt/qt/share/qt/translations/qt_*.qm "$QMDIR"
-        cp /opt/homebrew/opt/qt/share/qt/translations/qtbase_*.qm "$QMDIR"
+        cp /opt/local/libexec/qt6/translations/qt_*.qm "$QMDIR"
+        cp /opt/local/libexec/qt6/translations/qtbase_*.qm "$QMDIR"
         rm -R "$QMDIR"/qt_help_*.qm
         # run deploy script
-        bash ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app
+        bash ../scripts/deployqtmacx.sh AppDir/usr/local/e2\ SAT\ Editor.app -environment port
         # post actions
         chmod 644 AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Frameworks/*.dylib
         chmod -R 755 AppDir/usr/local/e2\ SAT\ Editor.app/Contents/Frameworks/*.framework
