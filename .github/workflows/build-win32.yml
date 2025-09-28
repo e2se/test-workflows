@@ -34,7 +34,20 @@ jobs:
         msystem: MINGW32
         update: true
         pacboy: >-
-          cc:i cmake:i ninja:i qt5-base:i qt5-translations:i curl:i
+          cc:i cmake:i ninja:i curl:i
+          dbus:i double-conversion:i fontconfig:i freetype:i harfbuzz:i icu:i libjpeg-turbo:i libpng:i md4c:i openssl:i pcre2:i sqlite3:i vulkan:i zlib:i zstd:i
+          git:i egl-headers:i gles-headers:i openssl:i pkgconf:i vulkan-headers:i rsync:i
+
+    - name: Install latest MinGW-w64-i686 Qt from MSYS2
+      shell: msys2 {0}
+      run:
+        pacman -S wget
+        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-qt5-base-5.15.16%2Bkde%2Br130-2-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-qt5-base-5.15.16%2Bkde%2Br130-2-any.pkg.tar.zst.sig
+        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-qt5-translations-5.15.16-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-qt5-translations-5.15.16-1-any.pkg.tar.zst.sig
+        pacman -U mingw-w64-i686-qt5-base-5.15.16%2Bkde%2Br130-2-any.pkg.tar.zst
+        pacman -U mingw-w64-i686-qt5-translations-5.15.16-1-any.pkg.tar.zst
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
@@ -86,7 +99,7 @@ jobs:
         bash ../scripts/deployqtwin.sh "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" \
         --verbose \
         -system MINGW32 \
-        -qt-version 5.15.17 \
+        -qt-version 5.15.16 \
         -modules Core,Gui,Widgets,PrintSupport \
         -plugins platforms,styles,printsupport \
         -libraries libcurl-4.dll,libcrypto-3.dll,libidn2-0.dll,libnghttp2-14.dll,libpsl-5.dll,libssh2-1.dll,libssl-3.dll,libunistring-5.dll
