@@ -1,0 +1,25 @@
+name: build-ping
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-24.04
+
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    steps:
+    - name: Print resolv.conf
+      continue-on-error: true
+      run: |
+        cat /etc/resolv.conf
+
+    - name: Ping
+      continue-on-error: true
+      run: |
+        ping -c 1 https://e2sateditor.com
+        curl --head https://e2sateditor.com
