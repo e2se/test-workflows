@@ -41,8 +41,6 @@ jobs:
     - name: Install latest MinGW-w64-i686 Qt5 from MSYS2
       shell: msys2 {0}
       run:
-        pacman -S wget
-
         wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-double-conversion-3.3.1-1-any.pkg.tar.zst
         wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-double-conversion-3.3.1-1-any.pkg.tar.zst.sig
         wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-icu-76.1-1-any.pkg.tar.zst
