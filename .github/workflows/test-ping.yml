@@ -13,9 +13,6 @@ jobs:
         shell: bash -el {0}
 
     steps:
-    - name: Setup Aptitude
-      run: sudo apt-get install iputils-ping
-  
     - name: Print resolv.conf
       continue-on-error: true
       run: |
@@ -24,5 +21,4 @@ jobs:
     - name: Ping
       continue-on-error: true
       run: |
-        ping -c 1 https://e2sateditor.com
         curl --head https://e2sateditor.com
