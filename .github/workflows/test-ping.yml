@@ -13,12 +13,37 @@ jobs:
         shell: bash -el {0}
 
     steps:
+    - name: Setup Aptitude
+      run: |
+        sudo apt-get install curl libcurl4-openssl-dev
+
+    - name: Setup Miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        miniforge-version: latest
+        auto-update-conda: true
+
+    - name: Install conda-forge packages
+      run: |
+        conda install conda-forge::curl
+
     - name: Print resolv.conf
       continue-on-error: true
       run: |
         cat /etc/resolv.conf
 
-    - name: Ping
+    - name: Response header curl [system]
       continue-on-error: true
       run: |
+        which curl
         curl --head https://e2sateditor.com
+
+    - name: Response header curl [miniconda]
+      continue-on-error: true
+      run: |
+        export LD_LIBRARY_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
+        export PATH=/home/runner/miniconda3/bin:/usr/local/bin:/usr/sbin:/usr/bin
+        which curl
+        curl --head https://e2sateditor.com
+        export LD_LIBRARY_PATH=
+        export PATH=
