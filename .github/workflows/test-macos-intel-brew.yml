@@ -14,7 +14,7 @@ jobs:
 
   build:
 
-    runs-on: macos-14-large
+    runs-on: macos-15-intel
     needs: user-manual
 
     env:
