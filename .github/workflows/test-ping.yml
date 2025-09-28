@@ -36,14 +36,13 @@ jobs:
     - name: Response header curl [system]
       continue-on-error: true
       run: |
-        which curl
-        curl --head https://e2sateditor.com
+        /usr/bin/curl --head https://e2sateditor.com
 
     - name: Response header curl [miniconda]
       continue-on-error: true
       run: |
         export LD_LIBRARY_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
-        export PATH=/home/runner/miniconda3/bin:/usr/local/bin:/usr/sbin:/usr/bin
+        export PATH=/home/runner/miniconda3/envs/test/bin:/home/runner/miniconda3/bin:/usr/local/bin:/usr/sbin:/usr/bin
         which curl
         curl --head https://e2sateditor.com
         export LD_LIBRARY_PATH=
