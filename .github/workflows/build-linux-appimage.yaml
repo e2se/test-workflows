@@ -50,6 +50,7 @@ jobs:
       with:
         miniforge-version: latest
         auto-update-conda: true
+        channels: conda-forge,defaults
 
     - name: Install conda-forge packages
       run: |
@@ -86,7 +87,7 @@ jobs:
       continue-on-error: true
       run: |
         DESTDIR=../AppDir ninja -C build install
-        # pre actions
+        # usr-share
         mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
         mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
         mkdir -p AppDir/usr/share/doc/e2-sat-editor

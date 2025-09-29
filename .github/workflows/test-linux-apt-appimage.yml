@@ -63,11 +63,12 @@ jobs:
       continue-on-error: true
       run: |
         DESTDIR=../AppDir ninja -C build install
-        # pre actions
+        # translations
         mkdir -p AppDir/usr/share/qt/translations
         cp /usr/share/qt6/translations/qt_*.qm AppDir/usr/share/qt/translations
         cp /usr/share/qt6/translations/qtbase_*.qm AppDir/usr/share/qt/translations
         rm -R AppDir/usr/share/qt/translations/qt_help_*.qm
+        # usr-share
         mv AppDir/usr/share/applications/e2-sat-editor.desktop AppDir/usr/share/applications/io.github.ctlcltd.e2se.desktop
         mv AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.metainfo.xml AppDir/usr/share/metainfo/io.github.ctlcltd.e2se.appdata.xml
         mkdir -p AppDir/usr/share/doc/e2-sat-editor
