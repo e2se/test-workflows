@@ -60,31 +60,31 @@ jobs:
       run: |
         DESTDIR=../AppDir ninja -C build install
         # translations
-        QMDIR="AppDir/Program Files (x86)/e2-sat-editor/bin/translations"
+        QMDIR="AppDir/Program Files/e2-sat-editor/bin/translations"
         mkdir -p "$QMDIR"
         cp ../dist/translations/*.qm "$QMDIR"
-        cp /mingw64/share/qt6/translations/qt_*.qm "$QMDIR"
-        cp /mingw64/share/qt6/translations/qtbase_*.qm "$QMDIR"
+        cp /clangarm64/share/qt6/translations/qt_*.qm "$QMDIR"
+        cp /clangarm64/share/qt6/translations/qtbase_*.qm "$QMDIR"
         rm -R "$QMDIR"/qt_help_*.qm
         # run deploy script
-        bash ../scripts/deployqtwin.sh "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" \
+        bash ../scripts/deployqtwin.sh "AppDir/Program Files/e2-sat-editor/bin/e2-sat-editor.exe" \
         --verbose \
         -system CLANGARM64
         -qt-version 6.10.1 \
         -modules Core,Gui,Widgets,PrintSupport \
         -libraries libcurl-4.dll,libcrypto-3-x64.dll,libidn2-0.dll,libnghttp2-14.dll,libnghttp3-9.dll,libngtcp2-16.dll,libngtcp2_crypto_ossl-0.dll,libpsl-5.dll,libssh2-1.dll,libssl-3-x64.dll,libunistring-5.dll
         # cleanup
-        rm "AppDir/Program Files (x86)/e2-sat-editor/bin/platforms/qdirect2d.dll"
+        rm "AppDir/Program Files/e2-sat-editor/bin/platforms/qdirect2d.dll"
         # package
         mkdir -p ../artifact/cli
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/Readme.txt" ../artifact/
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/License.txt" ../artifact/
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/Third-Party.txt" ../artifact/
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"*.dll ../artifact/
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/"{platforms,styles,translations} ../artifact/
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/ca-certificates" ../artifact/
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" ../artifact/
-        mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2se-cli.exe" ../artifact/cli/
+        mv "AppDir/Program Files/e2-sat-editor/bin/Readme.txt" ../artifact/
+        mv "AppDir/Program Files/e2-sat-editor/bin/License.txt" ../artifact/
+        mv "AppDir/Program Files/e2-sat-editor/bin/Third-Party.txt" ../artifact/
+        mv "AppDir/Program Files/e2-sat-editor/bin/"*.dll ../artifact/
+        mv "AppDir/Program Files/e2-sat-editor/bin/"{platforms,styles,translations} ../artifact/
+        mv "AppDir/Program Files/e2-sat-editor/bin/ca-certificates" ../artifact/
+        mv "AppDir/Program Files/e2-sat-editor/bin/e2-sat-editor.exe" ../artifact/
+        mv "AppDir/Program Files/e2-sat-editor/bin/e2se-cli.exe" ../artifact/cli/
         cp ../artifact/{libgcc_s_seh-1,libstdc++-6,libwinpthread-1}.dll ../artifact/cli/
 
     - name: Upload artifact
