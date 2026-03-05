@@ -1,4 +1,4 @@
-name: test-artifact
+name: test-artifact-macos
 
 on:
   workflow_dispatch:

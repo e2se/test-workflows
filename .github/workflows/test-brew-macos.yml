@@ -1,4 +1,4 @@
-name: test-brew
+name: test-brew-macos
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: test-ports
+name: test-macports
 
 on:
   workflow_dispatch:
