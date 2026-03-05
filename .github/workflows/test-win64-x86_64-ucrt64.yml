@@ -26,7 +26,7 @@ jobs:
         msystem: UCRT64
         update: true
         pacboy: >-
-          cc:x cmake:x ninja:x qt6-base:x qt6-translations:x curl:x
+          cc:u cmake:u ninja:u qt6-base:u qt6-translations:u curl:u
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/e2-sat-editor/src
