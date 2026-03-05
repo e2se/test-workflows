@@ -23,13 +23,13 @@ jobs:
       run: |
         dir
         md img
-        start ./e2-sat-editor.exe --debug 2>&1 > img\log.txt
+        start ./e2-sat-editor.exe
         timeout /t 6
         echo >test.vbs set shell = CreateObject("WScript.Shell"):shell.SendKeys "{HOME}{PRTSC}"
         ./test.vbs
         timeout /t 3
         taskkill /F /im e2-sat-editor.exe
-        copy $HOME\Documents\Pictures\Screenshots\* img\
+        copy $HOME\Pictures\Screenshots\* img\
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
