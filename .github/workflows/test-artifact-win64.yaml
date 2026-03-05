@@ -1,0 +1,36 @@
+name: test-artifact-win64
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-11-arm
+
+    steps:
+    - name: Download
+      working-directory: ${{github.workspace}}
+      continue-on-error: true
+      run: |
+        curl -L https://github.com/e2se/test-workflows/releases/download/v0.0.0-pre/artifact.zip -o artifact.zip
+        unzip -l artifact.zip
+        unzip artifact.zip -d artifact
+        ls -l artifact
+
+    - name: Test
+      working-directory: ${{github.workspace}}/artifact
+      continue-on-error: true
+      run: |
+        dir
+        md img
+        ./e2-sat-editor.exe --debug 2>&1 > img\log.txt &
+        timeout /t 6
+        echo >test.vbs set shell = CreateObject("WScript.Shell"):shell.SendKeys "{HOME}{PRTSC}" & test.vbs
+        timeout /t 3
+        taskkill /im e2-sat-editor.exe
+        copy $HOME\Documents\Pictures\Screenshots\* img\
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${{github.workspace}}/artifact/img
