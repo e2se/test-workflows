@@ -1,4 +1,4 @@
-## test-workflows
+# test-workflows
 
 Test workflows
 
@@ -8,7 +8,7 @@ Repository used to test automated build.
 
 &nbsp;
 
-### License
+## License
 
 Source code licensed under the terms of the [MIT License](https://github.com/e2se/test-workflows/blob/main/LICENSE-MIT).
 

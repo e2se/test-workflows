@@ -4,17 +4,14 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build:
-
     runs-on: windows-2022
-
     env:
       BUILD_TYPE: Release
 
     steps:
     - run: git config --global core.autocrlf input
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         repository: ctlcltd/e2-sat-editor
         path: e2-sat-editor

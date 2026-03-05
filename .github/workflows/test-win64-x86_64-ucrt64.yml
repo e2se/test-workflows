@@ -1,20 +1,14 @@
-name: build-win64
+name: test-win64-x86_64-ucrt64
 
 on:
   workflow_dispatch:
 
-env:
-  REF_TAG: v1.9.0
+# env:
+#   REF_TAG: v0.0.0
 
 jobs:
-  user-manual:
-    uses: ./.github/workflows/user-manual.yml
-    with:
-      runs-on: ubuntu-latest
-
   build:
     runs-on: windows-2022
-    needs: user-manual
     env:
       BUILD_TYPE: Release
 
@@ -29,7 +23,7 @@ jobs:
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2
       with:
-        msystem: MINGW64
+        msystem: UCRT64
         update: true
         pacboy: >-
           cc:x cmake:x ninja:x qt6-base:x qt6-translations:x curl:x
@@ -49,13 +43,6 @@ jobs:
       working-directory: ${{github.workspace}}/e2-sat-editor/src
       shell: msys2 {0}
       run: cmake --build build --config ${{ env.BUILD_TYPE }}
-
-    - name: Download user-manual artifact
-      uses: actions/download-artifact@v5
-      with:
-        name: user-manual
-        path: user-manual
-        run-id: ${{ needs.user-manual.outputs.run-id }}
 
     - name: Download deploy script
       working-directory: ${{github.workspace}}/e2-sat-editor
@@ -82,13 +69,14 @@ jobs:
         # run deploy script
         bash ../scripts/deployqtwin.sh "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" \
         --verbose \
+        -system UCRT64
         -qt-version 6.10.1 \
         -modules Core,Gui,Widgets,PrintSupport \
         -libraries libcurl-4.dll,libcrypto-3-x64.dll,libidn2-0.dll,libnghttp2-14.dll,libnghttp3-9.dll,libngtcp2-16.dll,libngtcp2_crypto_ossl-0.dll,libpsl-5.dll,libssh2-1.dll,libssl-3-x64.dll,libunistring-5.dll
         # cleanup
         rm "AppDir/Program Files (x86)/e2-sat-editor/bin/platforms/qdirect2d.dll"
         # package
-        mkdir -p ../artifact/{cli,user-manual}
+        mkdir -p ../artifact/cli
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/Readme.txt" ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/License.txt" ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/Third-Party.txt" ../artifact/
@@ -98,7 +86,6 @@ jobs:
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2-sat-editor.exe" ../artifact/
         mv "AppDir/Program Files (x86)/e2-sat-editor/bin/e2se-cli.exe" ../artifact/cli/
         cp ../artifact/{libgcc_s_seh-1,libstdc++-6,libwinpthread-1}.dll ../artifact/cli/
-        mv "${{github.workspace}}/user-manual" ../artifact/
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
