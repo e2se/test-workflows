@@ -24,10 +24,10 @@ jobs:
         # dir
         md img
         start ./e2-sat-editor.exe
-        timeout /t 6
-        $wshell = New-Object -ComObject wscript.shell;
-        $wshell.SendKeys('{HOME}{PRTSC}')
-        timeout /t 3
+        sleep -s 6
+        echo >test.vbs set shell = CreateObject("WScript.Shell"):shell.SendKeys "{HOME}{PRTSC}"
+        ./test.vbs
+        sleep -s 3
         taskkill /F /im e2-sat-editor.exe
         copy $HOME\Pictures\Screenshots\* img\
 
