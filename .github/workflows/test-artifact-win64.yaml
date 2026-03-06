@@ -21,12 +21,21 @@ jobs:
       working-directory: ${{github.workspace}}/artifact
       continue-on-error: true
       run: |
-        # dir
+        $w=New-Object -com WScript.Shell
+        $u='[DllImport("user32.dll")] public static extern void keybd_event(byte b, byte s, uint f, int e);'
+        Add-Type -MemberDefinition $u -Name Kbd -Namespace Win32
         md img
-        start ./e2-sat-editor.exe
+        start .\e2-sat-editor.exe --version
+        sleep -s 2
+        taskkill /F /im e2-sat-editor.exe
+        sleep -s 2
+        Start-Process -FilePath ".\e2-sat-editor.exe --debug" -RedirectStandardOutput "img\logout.txt" -RedirectStandardError "img\logerr.txt"
         sleep -s 6
-        echo >test.vbs set shell = CreateObject("WScript.Shell"):shell.SendKeys "{HOME}{PRTSC}"
-        ./test.vbs
+        $w.AppActivate("e2 SAT Editor")
+        sleep -s 2
+        [Win32.Kbd]::keybd_event(0x5b,0,0,0); [Win32.Kbd]::keybd_event(0x2c,0,0,0)
+        sleep -s 1
+        [Win32.Kbd]::keybd_event(0x5b,0,2,0); [Win32.Kbd]::keybd_event(0x2c,0,2,0)
         sleep -s 3
         taskkill /F /im e2-sat-editor.exe
         copy $HOME\Pictures\Screenshots\* img\
