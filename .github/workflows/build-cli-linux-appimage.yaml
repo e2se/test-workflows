@@ -21,6 +21,7 @@ jobs:
 
     - name: Setup Aptitude
       run: |
+        sudo apt-get update
         sudo apt-get install cmake ninja-build
 
     - name: Download deploy tools
