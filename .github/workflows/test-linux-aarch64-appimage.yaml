@@ -24,6 +24,7 @@ jobs:
 
     - name: Setup Aptitude
       run: |
+        sudo apt-get update
         sudo apt-get install cmake ninja-build
         sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
         sudo apt-get install curl libcurl4-openssl-dev
