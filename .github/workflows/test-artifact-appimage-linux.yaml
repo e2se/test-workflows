@@ -1,0 +1,30 @@
+name: test-artifact-appimage-linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+    - name: Download
+      working-directory: ${{github.workspace}}
+      continue-on-error: true
+      run: |
+        curl -L https://github.com/e2se/test-workflows/releases/download/v0.0.0-pre/artifact.zip -o artifact.zip
+        unzip -l artifact.zip
+        unzip artifact.zip -d artifact
+        ls -l artifact
+
+    - name: Test
+      working-directory: ${{github.workspace}}/artifact
+      continue-on-error: true
+      run: |
+        ./artifact --appimage-version
+        sleep 1
+        ./artifact --version
+        sleep 1
+        ./artifact --debug &
+        sleep 6
+        killall artifact
