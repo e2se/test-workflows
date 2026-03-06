@@ -25,7 +25,7 @@ jobs:
         $u='[DllImport("user32.dll")] public static extern void keybd_event(byte b, byte s, uint f, int e);'
         Add-Type -MemberDefinition $u -Name Kbd -Namespace Win32
         md img
-        start .\e2-sat-editor.exe --version
+        .\e2-sat-editor.exe --version
         sleep -s 2
         taskkill /F /im e2-sat-editor.exe
         sleep -s 2
