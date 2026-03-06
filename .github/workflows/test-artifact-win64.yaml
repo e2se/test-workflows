@@ -29,7 +29,7 @@ jobs:
         sleep -s 2
         taskkill /F /im e2-sat-editor.exe
         sleep -s 2
-        Start-Process -FilePath ".\e2-sat-editor.exe --debug" -RedirectStandardOutput "img\logout.txt" -RedirectStandardError "img\logerr.txt"
+        Start-Process -FilePath "e2-sat-editor.exe" -ArgumentList "--debug" -RedirectStandardOutput "img\logout.txt" -RedirectStandardError "img\logerr.txt"
         sleep -s 6
         $w.AppActivate("e2 SAT Editor")
         sleep -s 2
