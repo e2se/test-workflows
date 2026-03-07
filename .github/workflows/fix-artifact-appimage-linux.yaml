@@ -1,0 +1,51 @@
+name: fix-artifact-appimage-linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+    - name: Download deploy tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install fuse wget curl
+        wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-aarch64.AppImage
+        chmod +x appimagetool-aarch64.AppImage
+        mv appimagetool-aarch64.AppImage /usr/local/bin/appimagetool
+
+    - name: Download
+      working-directory: ${{github.workspace}}
+      continue-on-error: true
+      run: |
+        curl -L https://github.com/e2se/test-workflows/releases/download/v0.0.0-pre/apprun-sh.zip -o apprun-sh.zip
+        curl -L https://github.com/e2se/test-workflows/releases/download/v0.0.0-pre/artifact.zip -o artifact.zip
+        unzip -l apprun-sh.zip
+        unzip artifact.zip -d apprun-sh
+        ls -l apprun-sh
+        unzip -l artifact.zip
+        unzip artifact.zip -d artifact
+        ls -l artifact
+        mv apprun-sh/AppRun.sh artifact/AppRun.sh
+
+    - name: Test
+      working-directory: ${{github.workspace}}/artifact
+      continue-on-error: true
+      run: |
+        ./artifact --appimage-extract
+        ls -l squashfs-root
+        mv squashfs-root/AppRun squashfs-root/AppRun.wrapped
+        chmod +x AppRun.sh
+        mv AppRun.sh squashfs-root/AppRun
+        ls -l squashfs-root
+        appimagetool squashfs-root
+        mkdir bundle
+        mv e2_SAT_Editor-aarch64.AppImage bundle/
+        ls -l
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${{github.workspace}}/artifact/bundle
