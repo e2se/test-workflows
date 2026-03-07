@@ -23,7 +23,7 @@ jobs:
         curl -L https://github.com/e2se/test-workflows/releases/download/v0.0.0-pre/apprun-sh.zip -o apprun-sh.zip
         curl -L https://github.com/e2se/test-workflows/releases/download/v0.0.0-pre/artifact.zip -o artifact.zip
         unzip -l apprun-sh.zip
-        unzip artifact.zip -d apprun-sh
+        unzip apprun-sh.zip -d apprun-sh
         ls -l apprun-sh
         unzip -l artifact.zip
         unzip artifact.zip -d artifact
