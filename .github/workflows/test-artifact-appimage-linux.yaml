@@ -8,13 +8,18 @@ jobs:
     runs-on: ubuntu-24.04-arm
 
     steps:
+    - name: Setup Aptitude
+      run: |
+        sudo apt-get update
+        sudo apt-get install imagemagick desktop-file-utils xterm xvfb x11-utils x11-apps libgl1-mesa-dri libgl1-mesa-dev mesa-utils libosmesa6
+
     - name: Download
       working-directory: ${{github.workspace}}
       continue-on-error: true
       run: |
-        curl -L https://github.com/e2se/test-workflows/releases/download/v0.0.0-pre/artifact.zip -o artifact.zip
-        unzip -l artifact.zip
-        unzip artifact.zip -d artifact
+        curl -L https://github.com/e2se/test-workflows/releases/download/v0.0.0-pre/artifact-aarch64.zip -o artifact-aarch64.zip
+        unzip -l artifact-aarch64.zip
+        unzip artifact-aarch64.zip -d artifact
         ls -l artifact
 
     - name: Test
@@ -23,8 +28,19 @@ jobs:
       run: |
         ./artifact --appimage-version
         sleep 1
-        ./artifact --version
+        export LIBGL_ALWAYS_SOFTWARE=1
+        export QT_DEBUG_PLUGINS=1
+        xvfb-run -n 99 -s="-screen 0 1024x768x24" ./artifact --version
         sleep 1
-        ./artifact --debug &
-        sleep 6
         killall artifact
+        xvfb-run -n 99 -s="-screen 0 1024x768x24" ./artifact --debug &
+        sleep 6
+        mkdir img
+        DISPLAY=:99 import -window root img/image.png
+        sleep 2
+        killall artifact
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${{github.workspace}}/artifact/img
