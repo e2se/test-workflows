@@ -40,7 +40,7 @@ jobs:
       with:
         miniforge-version: latest
         auto-update-conda: true
-        channels: conda-forge
+        channels: conda-forge,defaults
 
     - name: Install conda-forge packages
       run: |
@@ -50,6 +50,7 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus
       run: |
+        export CMAKE_PREFIX_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib
         cmake \
         -G Ninja \
         -B build \
@@ -73,7 +74,7 @@ jobs:
         # store ldpath
         __LDPATH="$LD_LIBRARY_PATH"
         # run linuxdeploy
-        export LD_LIBRARY_PATH=/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
+        export LD_LIBRARY_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
         export QMAKE=qmake6
         export LDAI_NO_APPSTREAM=1
         linuxdeploy --appdir AppDir --plugin qt --output appimage
