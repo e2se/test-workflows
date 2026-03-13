@@ -6,6 +6,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    defaults:
+      run:
+        shell: bash -el {0}
 
     steps:
     - name: Setup apt-get
@@ -50,18 +53,9 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus
       run: |
-        echo -e "$CONDA_PREFIX"
-        find $CONDA_PREFIX -name "Qt6Config.cmake"
-        conda activate test
-        echo -e "$CONDA_PREFIX"
-        find $CONDA_PREFIX -name "Qt6Config.cmake"
-
-        # need CMAKE_PREFIX_PATH, CMakeLists.txt project is minimum version 3.16
-
         cmake \
         -G Ninja \
         -B build \
-        -DCMAKE_PREFIX_PATH="$CONDA_PREFIX;$CONDA_PREFIX/lib/cmake/Qt6" \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
