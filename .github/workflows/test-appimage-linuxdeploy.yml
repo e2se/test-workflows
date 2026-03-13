@@ -1,0 +1,104 @@
+name: test-appimage-linuxdeploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Setup apt-get
+      run: |
+        sudo apt-get update
+        sudo apt-get install cmake ninja-build
+        sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
+        sudo apt-get install wget
+
+    - name: Download qtbase with examples
+      working-directory: ${{github.workspace}}
+      run: |
+        wget https://master.qt.io/archive/qt/6.10/6.10.2/submodules/qtbase-everywhere-src-6.10.2.tar.xz
+        tar -xf qtbase-everywhere-src-6.10.2.tar.xz
+        cd qtbase-everywhere-src-6.10.2
+        cp -R examples ../qt6-examples
+
+    - name: Setup appimagetool linuxdeploy
+      run: |
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+        wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
+        chmod +x appimagetool-x86_64.AppImage
+        mv linuxdeploy-x86_64.AppImage /usr/local/bin/linuxdeploy
+        mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
+        mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
+
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        miniforge-version: latest
+        auto-update-conda: true
+        channels: conda-forge
+
+    - name: Install conda-forge packages
+      run: |
+        conda install conda-forge::qt6-main
+        # conda install conda-forge::qt6-wayland
+
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows
+      run: |
+        cmake \
+        -G Ninja \
+        -B build \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo
+
+    - name: Build
+      working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows
+      run: cmake --build build --config RelWithDebInfo
+
+    - name: Deploy
+      working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows
+      continue-on-error: true
+      run: |
+        # run ninja install
+        DESTDIR=../AppDir ninja -C build install
+        # provide a manifest file xdg
+        printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<component type=\"desktop-application\">\n<id>com.example.menus</id>\n<name>menus</name>\n<project_license>BSD-3-Clause</project_license>\n<launchable type=\"desktop-id\">com.example.menus.desktop</launchable>\n</component>\n" > "com.example.menus.metainfo.xml"
+        # provide a desktop file xdg
+        printf "[Desktop Entry]\nType=Application\nName=mainwindows\nExec=menus\n" > "com.example.menus.desktop"
+        # store ldpath
+        __LDPATH="$LD_LIBRARY_PATH"
+        # run linuxdeploy
+        export LD_LIBRARY_PATH=/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
+        export QMAKE=qmake6
+        export LDAI_NO_APPSTREAM=1
+        linuxdeploy --appdir AppDir --plugin qt --output appimage
+        # ldpath back
+        export LD_LIBRARY_PATH="$__LDPATH"
+        # move package (CMake project name: menus)
+        mkdir -p artifacts
+        mv menus-x86_64.AppImage artifacts
+
+    - name: Fix artifact proof
+      working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/artifacts
+      continue-on-error: true
+      run: |
+        # try to fix
+        # similar to https://github.com/AppImage/appimagetool/blob/main/resources/AppRun.sh
+        # this requires a shell for user and the exec shell built-in, so I don't know
+        printf "#!/bin/sh\n\nexec ./AppRun.wrapped \"$@\"\n" > AppRun.sh
+        chmod +x AppRun.sh
+        chmod +x menus-x86_64.AppImage
+        ./menus-x86_64.AppImage --appimage-extract
+        mv squashfs-root/AppRun squashfs-root/AppRun.wrapped
+        mv AppRun.sh squashfs-root/AppRun
+        appimagetool --no-appstream squashfs-root menus_fix-x86_64.AppImage
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        path: ${{github.workspace}}/qt6-examples/widgets/mainwindows/artifacts
