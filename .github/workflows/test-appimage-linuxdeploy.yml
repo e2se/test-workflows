@@ -88,7 +88,10 @@ jobs:
         printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<component type=\"desktop-application\">\n<id>com.example.menus</id>\n<name>menus</name>\n<project_license>BSD-3-Clause</project_license>\n<launchable type=\"desktop-id\">com.example.menus.desktop</launchable>\n</component>\n" > "AppDir/usr/share/metainfo/com.example.menus.metainfo.xml"
         # provide a desktop file xdg
         mkdir -p AppDir/usr/share/applications
-        printf "[Desktop Entry]\nType=Application\nName=mainwindows\nExec=menus\n" > "AppDir/usr/share/applications/com.example.menus.desktop"
+        printf "[Desktop Entry]\nType=Application\nName=mainwindows\nExec=menus\nIcon=menus\nCategories=Utility;\n" > "AppDir/usr/share/applications/com.example.menus.desktop"
+        # provide an icon
+        mkdir -p AppDir/usr/share/icons/hicolor/32x32/apps
+        cp /home/runner/miniconda3/envs/test/share/doc/qt6/global/tools-doc-front-page/images/build-32x32.png AppDir/usr/share/icons/hicolor/32x32/apps/menus.png
         # store ldpath
         __LDPATH="$LD_LIBRARY_PATH"
         # run linuxdeploy
