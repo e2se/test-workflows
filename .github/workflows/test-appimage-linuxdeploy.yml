@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Setup apt-get
@@ -53,6 +53,7 @@ jobs:
         cmake \
         -G Ninja \
         -B build \
+        -DCMAKE_MODULE_PATH="/home/runner/miniconda3/envs/test/lib/cmake"
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
