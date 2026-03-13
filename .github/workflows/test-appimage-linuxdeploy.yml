@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
     - name: Setup apt-get
@@ -50,7 +50,6 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus
       run: |
-        export CMAKE_PREFIX_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib
         cmake \
         -G Ninja \
         -B build \
