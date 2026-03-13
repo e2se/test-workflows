@@ -50,12 +50,26 @@ jobs:
         conda install conda-forge::qt6-main
         # conda install conda-forge::qt6-wayland
 
+    - name: Replace CMakeLists.txt
+      working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus
+      run: |
+        # qt6-examples/widgets/mainwindows/CMakeLists.txt uses qt6 built-in deploy
+        mv CMakeLists.txt CMakeLists.txt.old
+        printf "cmake_minimum_required(VERSION 3.16)\n\nproject(menus LANGUAGES CXX)\n\n" > CMakeLists.txt
+        printf "find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)\n\n" >> CMakeLists.txt
+        printf "set(CMAKE_CXX_STANDARD 17)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)\nset(CMAKE_AUTOMOC ON)\nset(CMAKE_AUTORCC ON)\n\n" >> CMakeLists.txt
+        printf "qt_add_executable(menus main.cpp mainwindow.cpp mainwindow.h)\n" >> CMakeLists.txt
+        printf "target_link_libraries(menus PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)\n\n" >> CMakeLists.txt
+        printf "include(GNUInstallDirs)\n" >> CMakeLists.txt
+        printf "install(TARGETS menus RUNTIME DESTINATION bin)\n" >> CMakeLists.txt
+
     - name: Configure CMake
       working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus
       run: |
         cmake \
         -G Ninja \
         -B build \
+        -DQT_DEPLOY_SUPPORT=OFF \
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
@@ -70,9 +84,11 @@ jobs:
         # run ninja install
         DESTDIR=../AppDir ninja -C build install
         # provide a manifest file xdg
-        printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<component type=\"desktop-application\">\n<id>com.example.menus</id>\n<name>menus</name>\n<project_license>BSD-3-Clause</project_license>\n<launchable type=\"desktop-id\">com.example.menus.desktop</launchable>\n</component>\n" > "com.example.menus.metainfo.xml"
+        mkdir -p AppDir/usr/share/metainfo
+        printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<component type=\"desktop-application\">\n<id>com.example.menus</id>\n<name>menus</name>\n<project_license>BSD-3-Clause</project_license>\n<launchable type=\"desktop-id\">com.example.menus.desktop</launchable>\n</component>\n" > "AppDir/usr/share/metainfo/com.example.menus.metainfo.xml"
         # provide a desktop file xdg
-        printf "[Desktop Entry]\nType=Application\nName=mainwindows\nExec=menus\n" > "com.example.menus.desktop"
+        mkdir -p AppDir/usr/share/applications
+        printf "[Desktop Entry]\nType=Application\nName=mainwindows\nExec=menus\n" > "AppDir/usr/share/applications/com.example.menus.desktop"
         # store ldpath
         __LDPATH="$LD_LIBRARY_PATH"
         # run linuxdeploy
