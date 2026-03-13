@@ -101,9 +101,9 @@ jobs:
         linuxdeploy --appdir AppDir --plugin qt --output appimage
         # ldpath back
         export LD_LIBRARY_PATH="$__LDPATH"
-        # move package (CMake project name: menus)
+        # move package
         mkdir -p artifacts
-        mv menus-x86_64.AppImage artifacts/
+        mv mainwindows-x86_64.AppImage artifacts/
 
     - name: Fix artifact proof
       working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus/artifacts
@@ -114,11 +114,11 @@ jobs:
         # this requires a shell for user and the exec shell built-in, so I don't know
         printf '#!/bin/sh\n\nexec ./AppRun.wrapped "$@"\n' > AppRun.sh
         chmod +x AppRun.sh
-        chmod +x menus-x86_64.AppImage
-        ./menus-x86_64.AppImage --appimage-extract
+        chmod +x mainwindows-x86_64.AppImage
+        ./mainwindows-x86_64.AppImage --appimage-extract
         mv squashfs-root/AppRun squashfs-root/AppRun.wrapped
         mv AppRun.sh squashfs-root/AppRun
-        appimagetool --no-appstream squashfs-root menus_fix-x86_64.AppImage
+        appimagetool --no-appstream squashfs-root mainwindows_fixproof-x86_64.AppImage
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
