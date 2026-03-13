@@ -50,10 +50,11 @@ jobs:
     - name: Configure CMake
       working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus
       run: |
+        # CMakeLists.txt project is minimum version 3.16
+        export CMAKE_PREFIX_PATH="$CONDA_PREFIX"
         cmake \
         -G Ninja \
         -B build \
-        -DCMAKE_MODULE_PATH="/home/runner/miniconda3/envs/test/lib/cmake"
         -DCMAKE_INSTALL_PREFIX=/usr \
         -DCMAKE_BUILD_TYPE=RelWithDebInfo
 
