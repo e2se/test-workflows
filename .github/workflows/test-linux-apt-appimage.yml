@@ -98,7 +98,7 @@ jobs:
         chmod +x squashfs-root/AppRun
         mv e2_SAT_Editor-x86_64.AppImage e2_SAT_Editor-x86_64.AppImage.bak
         appimagetool squashfs-root e2_SAT_Editor-x86_64.AppImage
-        rm -R apprunqtlinux
+        rm -R {apprunqtlinux,squashfs-root}
         rm main.tar.gz
         rm e2_SAT_Editor-x86_64.AppImage.bak
 
