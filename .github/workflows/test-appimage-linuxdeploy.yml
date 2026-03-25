@@ -92,33 +92,38 @@ jobs:
         # provide an icon
         mkdir -p AppDir/usr/share/icons/hicolor/32x32/apps
         cp /home/runner/miniconda3/envs/test/share/doc/qt6/global/tools-doc-front-page/images/build-32x32.png AppDir/usr/share/icons/hicolor/32x32/apps/menus.png
-        # store ldpath
-        __LDPATH="$LD_LIBRARY_PATH"
         # run linuxdeploy
         export LD_LIBRARY_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
         export QMAKE=qmake6
+        export DISABLE_COPYRIGHT_FILES_DEPLOYMENT=1
+        export EXTRA_QT_MODULES=eglfsdeviceintegration;eglfskmssupport;xcbqpa
+        export EXTRA_PLATFORM_PLUGINS=libqeglfs.so;libqlinuxfb.so;libqminimal.so;libqminimalegl.so;libqoffscreen.so;libqvkkhrdisplay.so;libqvnc.so;libqwayland.so;libqxcb.so
         export LDAI_NO_APPSTREAM=1
         linuxdeploy --appdir AppDir --plugin qt --output appimage
         # ldpath back
-        export LD_LIBRARY_PATH="$__LDPATH"
+        export LD_LIBRARY_PATH=
         # move package
         mkdir -p artifacts
         mv mainwindows-x86_64.AppImage artifacts/
 
-    - name: Fix artifact proof
-      working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus/artifacts
+    - name: Fix artifact
+      working-directory: ${{github.workspace}}/e2-sat-editor/artifact
       continue-on-error: true
       run: |
-        # try to fix
-        # similar to https://github.com/AppImage/appimagetool/blob/main/resources/AppRun.sh
-        # this requires a shell for user and the exec shell built-in, so I don't know
-        printf '#!/bin/sh\n\nexec ./AppRun.wrapped "$@"\n' > AppRun.sh
-        chmod +x AppRun.sh
-        chmod +x mainwindows-x86_64.AppImage
+        wget https://github.com/e2se/apprunqtlinux/archive/refs/heads/main.tar.gz
+        tar -zxvf main.tar.gz -C apprunqtlinux
+        cd apprunqtlinux
+        cmake -B . -DCMAKE_BUILD_TYPE=Release
+        cmake --build . --config Release
+        cd ..
         ./mainwindows-x86_64.AppImage --appimage-extract
         mv squashfs-root/AppRun squashfs-root/AppRun.wrapped
-        mv AppRun.sh squashfs-root/AppRun
-        appimagetool --no-appstream squashfs-root mainwindows_fixproof-x86_64.AppImage
+        cp apprunqtlinux/AppRun squashfs-root/AppRun
+        chmod +x squashfs-root/AppRun
+        mv mainwindows-x86_64.AppImage mainwindows-x86_64.AppImage.bak
+        appimagetool --no-appstream squashfs-root mainwindows-x86_64.AppImage
+        rm -R {apprunqtlinux,squashfs-root}
+        rm main.tar.gz
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
