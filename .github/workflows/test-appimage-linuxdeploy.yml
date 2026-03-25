@@ -110,19 +110,18 @@ jobs:
       continue-on-error: true
       run: |
         wget https://github.com/e2se/apprunqtlinux/archive/refs/heads/main.tar.gz
-        mkdir -p apprunqtlinux
-        tar -zxvf main.tar.gz -C apprunqtlinux
-        cd apprunqtlinux
+        tar -zxf main.tar.gz
+        cd apprunqtlinux-main
         cmake -B . -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
         cd ..
         ./mainwindows-x86_64.AppImage --appimage-extract
         mv squashfs-root/AppRun squashfs-root/AppRun.wrapped
-        cp apprunqtlinux/AppRun squashfs-root/AppRun
+        cp apprunqtlinux-main/AppRun squashfs-root/AppRun
         chmod +x squashfs-root/AppRun
         mv mainwindows-x86_64.AppImage mainwindows-x86_64.AppImage.bak
         appimagetool --no-appstream squashfs-root mainwindows-x86_64.AppImage
-        rm -R {apprunqtlinux,squashfs-root}
+        rm -R {apprunqtlinux-main,squashfs-root}
         rm main.tar.gz
 
     - name: Upload artifacts
