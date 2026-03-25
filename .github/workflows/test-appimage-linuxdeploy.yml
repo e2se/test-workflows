@@ -110,7 +110,7 @@ jobs:
       continue-on-error: true
       run: |
         wget https://github.com/e2se/apprunqtlinux/archive/refs/heads/main.tar.gz
-        mdir -p apprunqtlinux
+        mkdir -p apprunqtlinux
         tar -zxvf main.tar.gz -C apprunqtlinux
         cd apprunqtlinux
         cmake -B . -DCMAKE_BUILD_TYPE=Release
