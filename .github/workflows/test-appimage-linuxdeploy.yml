@@ -100,14 +100,13 @@ jobs:
         export EXTRA_PLATFORM_PLUGINS=libqeglfs.so;libqlinuxfb.so;libqminimal.so;libqminimalegl.so;libqoffscreen.so;libqvkkhrdisplay.so;libqvnc.so;libqwayland.so;libqxcb.so
         export LDAI_NO_APPSTREAM=1
         linuxdeploy --appdir AppDir --plugin qt --output appimage
-        # ldpath back
         export LD_LIBRARY_PATH=
         # move package
         mkdir -p artifacts
         mv mainwindows-x86_64.AppImage artifacts/
 
     - name: Fix artifact
-      working-directory: ${{github.workspace}}/e2-sat-editor/artifact
+      working-directory: ${{github.workspace}}/qt6-examples/widgets/mainwindows/menus/artifacts
       continue-on-error: true
       run: |
         wget https://github.com/e2se/apprunqtlinux/archive/refs/heads/main.tar.gz
