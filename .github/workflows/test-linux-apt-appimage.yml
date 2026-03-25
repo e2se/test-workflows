@@ -77,8 +77,8 @@ jobs:
         # run linuxdeploy
         export QMAKE=qmake6
         export DISABLE_COPYRIGHT_FILES_DEPLOYMENT=1
-        export EXTRA_QT_MODULES=eglfsdeviceintegration;eglfskmssupport;xcbqpa
-        export EXTRA_PLATFORM_PLUGINS=libqeglfs.so;libqlinuxfb.so;libqminimal.so;libqminimalegl.so;libqoffscreen.so;libqvkkhrdisplay.so;libqvnc.so;libqwayland.so;libqxcb.so
+        export EXTRA_QT_MODULES="eglfsdeviceintegration;eglfskmssupport;xcbqpa"
+        export EXTRA_PLATFORM_PLUGINS="libqeglfs.so;libqlinuxfb.so;libqminimal.so;libqminimalegl.so;libqoffscreen.so;libqvkkhrdisplay.so;libqvnc.so;libqwayland.so;libqxcb.so"
         linuxdeploy --appdir AppDir --plugin qt --output appimage
         # package
         mv e2_SAT_Editor-x86_64.AppImage ../artifact
@@ -88,18 +88,18 @@ jobs:
       continue-on-error: true
       run: |
         wget https://github.com/e2se/apprunqtlinux/archive/refs/heads/main.tar.gz
-        tar -zxvf main.tar.gz -C apprunqtlinux
-        cd apprunqtlinux
+        tar -zxf main.tar.gz
+        cd apprunqtlinux-main
         cmake -B . -DCMAKE_BUILD_TYPE=Release
         cmake --build . --config Release
         cd ..
         ./e2_SAT_Editor-x86_64.AppImage --appimage-extract
         mv squashfs-root/AppRun squashfs-root/AppRun.wrapped
-        cp apprunqtlinux/AppRun squashfs-root/AppRun
+        cp apprunqtlinux-main/AppRun squashfs-root/AppRun
         chmod +x squashfs-root/AppRun
         mv e2_SAT_Editor-x86_64.AppImage e2_SAT_Editor-x86_64.AppImage.bak
         appimagetool squashfs-root e2_SAT_Editor-x86_64.AppImage
-        rm -R {apprunqtlinux,squashfs-root}
+        rm -R {apprunqtlinux-main,squashfs-root}
         rm main.tar.gz
         rm e2_SAT_Editor-x86_64.AppImage.bak
 
