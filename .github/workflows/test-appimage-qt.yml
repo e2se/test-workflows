@@ -95,10 +95,12 @@ jobs:
         mkdir -p AppDir/usr/share/icons/hicolor/32x32/apps
         cp /home/runner/miniconda3/envs/test/share/doc/qt6/global/tools-doc-front-page/images/build-32x32.png AppDir/usr/share/icons/hicolor/32x32/apps/testqt.png
         # run linuxdeploy
+        export LD_LIBRARY_PATH=/home/runner/miniconda3/envs/test/lib:/home/runner/miniconda3/lib:/usr/local/lib:/usr/lib
         export QMAKE=qmake6
         export DISABLE_COPYRIGHT_FILES_DEPLOYMENT=1
         export LDAI_NO_APPSTREAM=1
         linuxdeploy --appdir AppDir --plugin qt --output appimage
+        export LD_LIBRARY_PATH=
         # move package
         mv mainwindows-x86_64.AppImage artifact
 
