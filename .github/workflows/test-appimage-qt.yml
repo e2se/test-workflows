@@ -102,7 +102,7 @@ jobs:
         linuxdeploy --appdir AppDir --plugin qt --output appimage
         export LD_LIBRARY_PATH=
         # move package
-        mv mainwindows-x86_64.AppImage artifact
+        mv testqt-x86_64.AppImage artifact
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v6
