@@ -64,7 +64,7 @@ jobs:
         printf '\tqDebug() << "applicationDirPath: " << mroot->applicationDirPath();\n' >> main.cpp
         printf '\tqDebug() << "libraryPaths: " << mroot->libraryPaths();\n' >> main.cpp
         printf '\tQWidget* mwid = new QWidget;\tmwid->setWindowTitle("testqt");\tmwid->setMinimumSize(640, 480);\tmwid->show();\n\n' >> main.cpp
-        printf '\treturn mroot->exec();\n}\n" >> main.cpp
+        printf '\treturn mroot->exec();\n}\n' >> main.cpp
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/testqt
