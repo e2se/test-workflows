@@ -101,7 +101,8 @@ jobs:
         linuxdeploy --appdir AppDir --plugin qt --output appimage
         export LD_LIBRARY_PATH=
         # package
-        mv e2_SAT_Editor-aarch64.AppImage ../artifact
+        mkdir -p ../artifact
+        mv e2_SAT_Editor-aarch64.AppImage ../artifact/
   
     - name: Fix artifact
       working-directory: ${{github.workspace}}/e2-sat-editor/artifact

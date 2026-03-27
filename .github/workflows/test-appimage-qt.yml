@@ -1,0 +1,108 @@
+name: test-appimage-qt
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+
+    steps:
+    - name: Setup apt-get
+      run: |
+        sudo apt-get update
+        sudo apt-get install wget
+        sudo apt-get install cmake ninja-build
+        sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
+
+    - name: Setup appimagetool linuxdeploy
+      run: |
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+        wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+        wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-x86_64.AppImage
+        chmod +x linuxdeploy-x86_64.AppImage
+        chmod +x linuxdeploy-plugin-qt-x86_64.AppImage
+        chmod +x appimagetool-x86_64.AppImage
+        mv linuxdeploy-x86_64.AppImage /usr/local/bin/linuxdeploy
+        mv linuxdeploy-plugin-qt-x86_64.AppImage /usr/local/bin/linuxdeploy-plugin-qt
+        mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
+
+    - name: Setup miniconda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        miniforge-version: latest
+        auto-update-conda: true
+        channels: conda-forge,defaults
+
+    - name: Install conda-forge packages
+      run: |
+        conda install conda-forge::qt6-main
+
+    - name: Create files
+      working-directory: ${{github.workspace}}
+      run: |
+        mkdir testqt
+        cd testqt
+        # CMakeLists.txt
+        printf "cmake_minimum_required(VERSION 3.22)\n\nproject(testqt LANGUAGES CXX)\n\n" > CMakeLists.txt
+        printf "find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)\n\n" >> CMakeLists.txt
+        printf "set(CMAKE_CXX_STANDARD 17)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)\nset(CMAKE_AUTOMOC ON)\nset(CMAKE_AUTORCC ON)\n\n" >> CMakeLists.txt
+        printf "qt_add_executable(testqt main.cpp)\n" >> CMakeLists.txt
+        printf "target_link_libraries(testqt PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets)\n\n" >> CMakeLists.txt
+        printf "include(GNUInstallDirs)\n" >> CMakeLists.txt
+        printf "install(TARGETS testqt RUNTIME DESTINATION bin)\n" >> CMakeLists.txt
+        # main.cpp
+        printf '#include <QApplication>\n#include <QWidget>\n#include <QDebug>\n\n' > main.cpp
+        printf 'int main(int argc, char* argv[])\n{\n' >> main.cpp
+        printf '\tQApplication* mroot = new QApplication(argc, argv);\n\n' >> main.cpp
+        printf '\tqDebug() << "argv[0]: " << argv[0];\n' >> main.cpp
+        printf '\tqDebug() << "arguments: " << mroot->arguments();\n' >> main.cpp
+        printf '\tqDebug() << "applicationFilePath: " << mroot->applicationFilePath();\n' >> main.cpp
+        printf '\tqDebug() << "applicationDirPath: " << mroot->applicationDirPath();\n' >> main.cpp
+        printf '\tqDebug() << "libraryPaths: " << mroot->libraryPaths();\n' >> main.cpp
+        printf '\tQWidget* mwid = new QWidget;\tmwid->setWindowTitle("testqt");\tmwid->setMinimumSize(640, 480);\tmwid->show();\n\n' >> main.cpp
+        printf '\treturn mroot->exec();\n}\n" >> main.cpp
+
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}/testqt
+      run: |
+        cmake \
+        -G Ninja \
+        -B build \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      working-directory: ${{github.workspace}}/testqt
+      run: cmake --build build --config Release
+
+    - name: Deploy
+      working-directory: ${{github.workspace}}/testqt
+      continue-on-error: true
+      run: |
+        # run ninja install
+        DESTDIR=../AppDir ninja -C build install
+        # provide a manifest file xdg
+        mkdir -p AppDir/usr/share/metainfo
+        printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<component type=\"desktop-application\">\n<id>com.example.testqt</id>\n<name>testqt</name>\n<launchable type=\"desktop-id\">com.example.testqt.desktop</launchable>\n</component>\n" > "AppDir/usr/share/metainfo/com.example.testqt.metainfo.xml"
+        # provide a desktop file xdg
+        mkdir -p AppDir/usr/share/applications
+        printf "[Desktop Entry]\nType=Application\nName=testqt\nExec=testqt\nIcon=testqt\nCategories=Utility;\n" > "AppDir/usr/share/applications/com.example.testqt.desktop"
+        # provide an icon
+        mkdir -p AppDir/usr/share/icons/hicolor/32x32/apps
+        cp /home/runner/miniconda3/envs/test/share/doc/qt6/global/tools-doc-front-page/images/build-32x32.png AppDir/usr/share/icons/hicolor/32x32/apps/testqt.png
+        # run linuxdeploy
+        export QMAKE=qmake6
+        export DISABLE_COPYRIGHT_FILES_DEPLOYMENT=1
+        export LDAI_NO_APPSTREAM=1
+        linuxdeploy --appdir AppDir --plugin qt --output appimage
+        # move package
+        mv mainwindows-x86_64.AppImage artifact
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v6
+      with:
+        path: ${{github.workspace}}/testqt/artifact
