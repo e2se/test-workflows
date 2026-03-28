@@ -55,14 +55,24 @@ jobs:
         printf "include(GNUInstallDirs)\n" >> CMakeLists.txt
         printf "install(TARGETS testqtcli RUNTIME DESTINATION bin)\n" >> CMakeLists.txt
         # main.cpp
-        printf '#include <QCoreApplication>\n#include <QDebug>\n\n' > main.cpp
+        printf '#include <QCoreApplication>\n#include <QLibraryInfo>\n#include <QDebug>\n\n' > main.cpp
         printf 'int main(int argc, char* argv[])\n{\n' >> main.cpp
         printf '\tQCoreApplication* mroot = new QCoreApplication(argc, argv);\n\n' >> main.cpp
         printf '\tqDebug() << "argv[0]: " << argv[0];\n' >> main.cpp
         printf '\tqDebug() << "arguments: " << mroot->arguments();\n' >> main.cpp
         printf '\tqDebug() << "applicationFilePath: " << mroot->applicationFilePath();\n' >> main.cpp
         printf '\tqDebug() << "applicationDirPath: " << mroot->applicationDirPath();\n' >> main.cpp
-        printf '\tqDebug() << "libraryPaths: " << mroot->libraryPaths();\n\n' >> main.cpp
+        printf '\tqDebug() << "libraryPaths: " << mroot->libraryPaths();\n' >> main.cpp
+        printf '\tqDebug() << "";\n' >> main.cpp
+        printf '\tqDebug() << "Version: " << QLibraryInfo::version();\n' >> main.cpp
+        printf '\tqDebug() << "PrefixPath: " << QLibraryInfo::path(QLibraryInfo::PrefixPath);\n' >> main.cpp
+        printf '\tqDebug() << "LibrariesPath: " << QLibraryInfo::path(QLibraryInfo::LibrariesPath);\n' >> main.cpp
+        printf '\tqDebug() << "LibraryExecutablesPath: " << QLibraryInfo::path(QLibraryInfo::LibraryExecutablesPath);\n' >> main.cpp
+        printf '\tqDebug() << "BinariesPath: " << QLibraryInfo::path(QLibraryInfo::BinariesPath);\n' >> main.cpp
+        printf '\tqDebug() << "PluginsPath: " << QLibraryInfo::path(QLibraryInfo::PluginsPath);\n' >> main.cpp
+        printf '\tqDebug() << "ArchDataPath: " << QLibraryInfo::path(QLibraryInfo::ArchDataPath);\n' >> main.cpp
+        printf '\tqDebug() << "DataPath: " << QLibraryInfo::path(QLibraryInfo::DataPath);\n' >> main.cpp
+        printf '\tqDebug() << "SettingsPath: " << QLibraryInfo::path(QLibraryInfo::SettingsPath);\n\n' >> main.cpp
         printf '\treturn mroot->exec();\n}\n' >> main.cpp
 
     - name: Configure CMake
