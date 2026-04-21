@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     env:
-      BUILD_TYPE: Release
+      BUILD_TYPE: RelWithDebInfo
     defaults:
       run:
         shell: bash -el {0}
