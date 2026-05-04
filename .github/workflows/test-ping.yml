@@ -16,7 +16,7 @@ jobs:
         sudo apt-get install curl libcurl4-openssl-dev
 
     - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v3
+      uses: conda-incubator/setup-miniconda@v4
       with:
         miniforge-version: latest
         auto-update-conda: true
@@ -31,7 +31,7 @@ jobs:
       run: |
         cat /etc/resolv.conf
 
-    - name: Response header curl [system]
+    - name: Response header curl
       continue-on-error: true
       run: |
         /usr/bin/curl --head https://e2sateditor.com

@@ -3,8 +3,8 @@ name: test-linux-aarch64-appimage
 on:
   workflow_dispatch:
 
-# env:
-#   REF_TAG: v0.0.0
+env:
+  REF_TAG: v2.0.0
 
 jobs:
   build:
@@ -25,14 +25,14 @@ jobs:
     - name: Setup Aptitude
       run: |
         sudo apt-get update
+        sudo apt-get install wget
         sudo apt-get install cmake ninja-build
         sudo apt-get install libgl1-mesa-dev libglvnd-dev libxcb-xkb-dev libxkbcommon-x11-dev libvulkan-dev
-        sudo apt-get install curl libcurl4-openssl-dev
         sudo apt-get install libcups2-dev
+        sudo apt-get install curl libcurl4-openssl-dev
 
     - name: Download deploy tools
       run: |
-        sudo apt-get install fuse wget
         wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-aarch64.AppImage
         wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-aarch64.AppImage
         wget https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-aarch64.AppImage
@@ -44,7 +44,7 @@ jobs:
         mv appimagetool-aarch64.AppImage /usr/local/bin/appimagetool
 
     - name: Setup Miniconda
-      uses: conda-incubator/setup-miniconda@v3
+      uses: conda-incubator/setup-miniconda@v4
       with:
         miniforge-version: latest
         auto-update-conda: true
@@ -124,6 +124,6 @@ jobs:
         rm e2_SAT_Editor-x86_64.AppImage.bak
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         path: ${{github.workspace}}/e2-sat-editor/artifact

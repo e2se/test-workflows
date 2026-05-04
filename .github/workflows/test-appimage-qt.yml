@@ -31,7 +31,7 @@ jobs:
         mv appimagetool-x86_64.AppImage /usr/local/bin/appimagetool
 
     - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v3
+      uses: conda-incubator/setup-miniconda@v4
       with:
         miniforge-version: latest
         auto-update-conda: true
