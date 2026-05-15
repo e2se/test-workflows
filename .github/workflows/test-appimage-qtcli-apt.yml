@@ -89,6 +89,6 @@ jobs:
         mv testqtcli-x86_64.AppImage artifact
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         path: ${{github.workspace}}/testqtcli/artifact

@@ -94,6 +94,6 @@ jobs:
         cp ../artifact/{libgcc_s_dw2-1,libstdc++-6,libwinpthread-1}.dll ../artifact/cli/
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         path: ${{github.workspace}}/e2-sat-editor/artifact
